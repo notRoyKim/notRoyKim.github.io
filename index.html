@@ -6,35 +6,30 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="header"></div>
+  
+  <div id="header-placeholder"></div>
 
   <main class="contents" id="contents">
     <h1>notRoyKim nexon API 테스트</h1>
     <p>던전 아이템 정리용입니다.</p>
   </main>
 
-  <div id="footer"></div>
+  <div id="footer-placeholder"></div>
 
-  <script>
-    // header/footer 불러오기
-    async function includeHTML(id, file) {
-      const response = await fetch(file);
-      document.getElementById(id).innerHTML = await response.text();
-    }
-    includeHTML("header", "/header.html");
-    includeHTML("footer", "/footer.html");
-  </script>
-
-  <!-- header 불러온 후 실행할 스크립트 -->
-  <script>
-    document.addEventListener("click", function(e) {
-      if (e.target.closest("#menuBtn")) {
-        const lnb = document.getElementById("lnb");
-        const contents = document.getElementById("contents");
-        lnb.classList.toggle("active");
-        contents.classList.toggle("shrink");
+ <script>
+    async function loadHTML(id, file) {
+      const res = await fetch(file);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
       }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadHTML("header-placeholder", "header.html");
+      await loadHTML("footer-placeholder", "footer.html");
+      alarm("정상 작동")
     });
+   
   </script>
 </body>
 </html>
