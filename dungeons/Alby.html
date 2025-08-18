@@ -1,1 +1,33 @@
-a
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>nRK 던전아이템정리</title>
+</head>
+<body>
+  
+  <div id="header-placeholder"></div>
+
+  <main class="contents" id="contents">
+    <h1>notRoyKim nexon API 테스트</h1>
+    <p>던전 아이템 정리용입니다.</p>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+ <script>
+    async function loadHTML(id, file) {
+      const res = await fetch(file);
+      if (res.ok) {
+        document.getElementById(id).innerHTML = await res.text();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadHTML("header-placeholder", "header.html");
+      await loadHTML("footer-placeholder", "footer.html");
+    });
+   
+  </script>
+</body>
+</html>
