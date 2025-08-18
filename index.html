@@ -15,19 +15,6 @@
 
   <div id="footer-placeholder"></div>
 
- <script>
-    async function loadHTML(id, file) {
-      const res = await fetch(file);
-      if (res.ok) {
-        document.getElementById(id).innerHTML = await res.text();
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", async () => {
-      await loadHTML("header-placeholder", "header.html");
-      await loadHTML("footer-placeholder", "footer.html");
-    });
-   
-  </script>
+  <script src="/js/main.js"></script>
 </body>
 </html>
