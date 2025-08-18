@@ -41,7 +41,7 @@
   .lnb {
     position: fixed;
     top: 70px; /* header 밑 */
-    right: -220px; /* 기본 화면 밖 */
+    left: -220px; /* 기본 화면 밖 */
     width: 220px;
     height: calc(100% - 50px); 
     background: #eee;
@@ -53,7 +53,7 @@
     z-index: 100;
   }
   .lnb.active {
-    right: 0; /* 슬라이드 인 */
+    left: 0; /* 슬라이드 인 */
   }
   .lnb div {
     padding: 12px;
@@ -71,7 +71,7 @@
 <body>
   <header>
     <div class="menu-container">
-      <div class="hamburger">
+      <div class="hamburger" id="menuBtn">
         <span></span>
         <span></span>
         <span></span>
