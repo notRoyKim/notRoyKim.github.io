@@ -1,5 +1,9 @@
-body {
+body, html {
   margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 header {
   height: 70px;
@@ -60,8 +64,16 @@ header {
 .lnb div:hover {
 background: #ccc;
 }
+/* contents는 flex-grow로 남은 공간 채우기 */
+main.contents {
+  flex: 1 0 auto; /* 성장 가능, 기본 auto */
+  transition: width 0.3s ease; /* LNB 열릴 때 width 애니메이션 */
+  padding: 20px;
+  box-sizing: border-box;
+}
 .contents.shrink {
-  margin-right: 220px;
+  width: calc(100% - 220px); /* LNB 너비 만큼 축소 */
+  transition: width 0.3s ease;
 }
 footer {
   height: 80px;
@@ -70,6 +82,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0; /* 절대 줄어들지 않음 */
 }
 .footer-content {
   width: 70%;
