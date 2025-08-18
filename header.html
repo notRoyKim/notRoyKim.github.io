@@ -36,6 +36,34 @@
       background: #333;
       border-radius: 2px;
     }
+
+    /* LNB 스타일 */
+    .lnb {
+      position: fixed;
+      top: 50px; /* header 밑에서 시작 */
+      left: 0;
+      width: 200px;
+      height: calc(100% - 50px);
+      background: #eee;
+      display: none; /* 기본 닫힘 */
+      flex-direction: column;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .lnb.active {
+      display: flex;
+    }
+    .lnb div {
+      padding: 12px;
+      margin-bottom: 8px;
+      background: #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .lnb div:hover {
+      background: #ccc;
+    }
   </style>
 </head>
 <body>
@@ -47,6 +75,22 @@
         <span></span>
       </div>
     </div>
+
+    <nav class="lnb" id="lnb">
+      <div>메뉴1</div>
+      <div>메뉴2</div>
+      <div>메뉴3</div>
+    </nav>
+  
+    <script>
+      const menuBtn = document.getElementById("menuBtn");
+      const lnb = document.getElementById("lnb");
+  
+      menuBtn.addEventListener("click", () => {
+        lnb.classList.toggle("active");
+      });
+    </script>
+    
   </header>
 </body>
 </html>
