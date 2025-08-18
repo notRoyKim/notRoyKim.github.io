@@ -68,7 +68,7 @@ background: #ccc;
 main.contents {
   flex: 1 0 auto; /* 성장 가능, 기본 auto */
   transition: width 0.3s ease; /* LNB 열릴 때 width 애니메이션 */
-  padding: 20px;
+  padding: 20px 15%;
   box-sizing: border-box;
 }
 .contents.shrink {
