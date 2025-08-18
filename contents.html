@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Cont1 Page</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="header"></div>
+
+  <main class="contents" id="contents">
+    <h1>콘텐츠 1</h1>
+    <p>여기에 cont1 내용이 들어갑니다.</p>
+  </main>
+
+  <div id="footer"></div>
+
+  <script>
+    // header/footer 불러오기
+    async function includeHTML(id, file) {
+      const response = await fetch(file);
+      document.getElementById(id).innerHTML = await response.text();
+    }
+    includeHTML("header", "/header.html");
+    includeHTML("footer", "/footer.html");
+  </script>
+
+  <!-- header 불러온 후 실행할 스크립트 -->
+  <script>
+    document.addEventListener("click", function(e) {
+      if (e.target.closest("#menuBtn")) {
+        const lnb = document.getElementById("lnb");
+        const contents = document.getElementById("contents");
+        lnb.classList.toggle("active");
+        contents.classList.toggle("shrink");
+      }
+    });
+  </script>
+</body>
+</html>
