@@ -4,8 +4,8 @@ async function loadHTML(id, file) {
 }
 
 async function initPage() {
-  await loadHTML("header-placeholder", "header.html");
-  await loadHTML("footer-placeholder", "footer.html");
+  await loadHTML("header-placeholder", "/header.html");
+  await loadHTML("footer-placeholder", "/footer.html");
 
   const menuBtn = document.getElementById("menuBtn");
   const lnb = document.getElementById("lnb");
