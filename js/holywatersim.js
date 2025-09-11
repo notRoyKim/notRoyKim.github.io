@@ -1,6 +1,9 @@
 const enchStruct = {
-  id72001 : { min: 0, max: 10, value: "최대공격력" },
-  id72002 : { min: 0, max: 10, value: "최대공격력" }
+  id72001 : { min: 1, max: 10, value: "최대공격력" },
+  id72002 : { min: 11, max: 20, value: "최대공격력" },
+  id72003 : { min: 21, max: 30, value: "최대공격력" },
+  id72004 : { min: 31, max: 40, value: "최대공격력" },
+  id72005 : { min: 41, max: 50, value: "최대공격력" }
 }
 
 function enchantFunc(idObj) {
