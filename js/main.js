@@ -7,8 +7,12 @@ async function initPage() {
   await loadHTML("header-placeholder", "/header.html");
   await loadHTML("footer-placeholder", "/footer.html");
   
-  const uladh = document.getElementsByClassName("footer-placeholder");
+  const uladh = document.getElementsByClassName("uladh-placeholder");
   if(uladh) await loadHTML("uladh-placeholder", "/uladh.html");
+
+  
+  const holywater = document.getElementsByClassName("holywater-placeholder");
+  if(holywater) await loadHTML("holywater-placeholder", "/holywater.html");
 
   const menuBtn = document.getElementById("menuBtn");
   const lnb = document.getElementById("lnb");
