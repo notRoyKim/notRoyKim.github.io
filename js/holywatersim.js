@@ -112,13 +112,14 @@ function enchantFunc(idObj) {
 
 document.querySelector('.spin-btn').addEventListener('click', () => {
   const enchantID = Math.floor(Math.random() * (4)) + 72001;
-
-  if (idObj) {
-    const result = enchantFunc("id" + enchantID);
+  
+  const result = enchantFunc("id" + enchantID);
+  
+  if (result) {
     document.querySelector('.filler').innerHTML = 
       `<span>${result}</span>`;
   } else {
     document.querySelector('.filler').innerHTML = 
-      `ID: ${enchantID} 데이터 없음`;
+      `에러`;
   }
 });
