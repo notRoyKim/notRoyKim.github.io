@@ -1,0 +1,40 @@
+.sim-upperbox {
+  display: flex;
+  height: 120px;
+}
+
+/* 버튼 스타일 */
+.spin-btn {
+  width: 360px;
+  border-radius: 20px;
+  border: none;
+  background-color: #ffcc00;
+  position: relative;
+  cursor: pointer;
+  font-family: inherit;
+  overflow: hidden;
+}
+
+/* 이모지 (위쪽 20% 지점에 가운데 정렬) */
+.spin-btn .emoji {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+}
+
+/* "돌리기!" 텍스트 (60% 지점에 가운데 정렬) */
+.spin-btn .label {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* 나머지 flex 영역 */
+.filler {
+  flex: 1;
+}
