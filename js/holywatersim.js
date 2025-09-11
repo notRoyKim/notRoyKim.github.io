@@ -112,10 +112,9 @@ function enchantFunc(idObj) {
 
 document.querySelector('.spin-btn').addEventListener('click', () => {
   const enchantID = Math.floor(Math.random() * (4)) + 72001;
-  const idObj = window["id" + enchantID];
 
   if (idObj) {
-    const result = enchantFunc(idObj);
+    const result = enchantFunc("id" + enchantID);
     document.querySelector('.filler').innerHTML = 
       `<span>${result}</span>`;
   } else {
