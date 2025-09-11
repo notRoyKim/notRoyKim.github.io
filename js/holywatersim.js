@@ -9,7 +9,7 @@ const enchStruct = {
 function enchantFunc(idObj) {
   const min = idObj.min;
   const max = idObj.max;
-  return idObj.value + Math.floor(Math.random() * (max - min + 1)) + min;
+  return idObj.value + (Math.floor(Math.random() * (max - min + 1)) + min);
 }
 
 
