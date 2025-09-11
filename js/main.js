@@ -11,8 +11,13 @@ async function initPage() {
   if(uladh) await loadHTML("uladh-placeholder", "/uladh.html");
   
   const holywater = document.querySelector("#holywater-placeholder");
-  if(holywater) await loadHTML("holywater-placeholder", "/holywatersim.html");
+  if(holywater) {
+    await loadHTML("holywater-placeholder", "/holywatersim.html");
 
+    const waterScript = document.createElement("script");
+    waterScript.src = "/js/holywatersim.js";
+    document.body.appendChild(waterScript);
+  }
   const menuBtn = document.getElementById("menuBtn");
   const lnb = document.getElementById("lnb");
   const contents = document.getElementById("contents");
