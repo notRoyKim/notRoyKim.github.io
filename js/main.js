@@ -11,7 +11,7 @@ async function initPage() {
   if(uladh) await loadHTML("uladh-placeholder", "/uladh.html");
   
   const holywater = document.querySelector("#holywater-placeholder");
-  if(holywater) await loadHTML("holywater-placeholder", "/holywater.html");
+  if(holywater) await loadHTML("holywater-placeholder", "/holywatersim.html");
 
   const menuBtn = document.getElementById("menuBtn");
   const lnb = document.getElementById("lnb");
