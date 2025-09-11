@@ -104,6 +104,9 @@ const id72102 = { min: 10, max: 20, value: 0 };
 
 
 function enchantFunc(idObj) {
+
+  console.log("clicked")
+  
   const min = idObj.min;
   const max = idObj.max;
   return idObj.value + Math.floor(Math.random() * (max - min + 1)) + min;
@@ -112,8 +115,10 @@ function enchantFunc(idObj) {
 
 document.querySelector('.spin-btn').addEventListener('click', () => {
   const enchantID = Math.floor(Math.random() * (4)) + 72001;
-  console.log("clicked")
+  console.log("id" + enchantID)
   const result = enchantFunc("id" + enchantID);
+  
+  console.log(result)
   
   if (result) {
     document.querySelector('.filler').innerHTML = 
