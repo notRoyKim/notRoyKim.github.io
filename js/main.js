@@ -9,6 +9,12 @@ async function initPage() {
   
   const uladh = document.querySelector("#uladh-placeholder");
   if(uladh) await loadHTML("uladh-placeholder", "/uladh.html");
+
+  const tech = document.querySelector("#tech-placeholder");
+  if(tech) {
+      await loadHTML("tech-placeholder", "/tech.html");
+      document.dispatchEvent(new Event('buttonsInserted'));
+  }
   
   const holywater = document.querySelector("#holywater-placeholder");
   if(holywater) {
@@ -31,3 +37,4 @@ async function initPage() {
 }
 
 document.addEventListener("DOMContentLoaded", initPage);
+
