@@ -15,14 +15,39 @@ const tech = [
     {itemname:'기아스 코어', price:7000, imgUrl: '/assets/images/64113.png'},
 ]
 
+const CACHE_TTL = 1000 * 60 * 5;
+
+function loadCache() {
+    const raw = localStorage.getItem('auctionCache');
+    return raw ? JSON.parse(raw) : {};
+}
+
+function saveCache(cache) {
+    localStorage.setItem('auctionCache', JSON.stringify(cache));
+}
+
 document.addEventListener('buttonsInserted', async () => {
     const buttons = document.querySelectorAll('.drop-btn');
     const itemnames = [];
+    let results = [];
+    let apiRes = [];
+    const cache = loadCache();
+    const now = Date.now();
+
 
     buttons.forEach(btn => {
         const index = parseInt(btn.value);
-        btn.dataset.itemname = tech[index].itemname;
+        const itemname = tech[index].itemname;
+        btn.dataset.itemname = itemname;
         btn.dataset.price = tech[index].price;
+
+        if (cache[itemname] && now < cache[itemname].expires) {
+            console.log("캐시 존재함 : " + cache[itemname]);
+            results.push({"item_name" : itemname, "avg_price" : cache[itemname].value, "flag_al" : cache[itemname].flag_al});
+        } else {
+            console.log("캐시 없음 : " + itemname);
+            itemnames.push(itemname);
+        }
 
         const img = document.createElement('img');
         img.className = 'drop-btn-image';
@@ -31,26 +56,19 @@ document.addEventListener('buttonsInserted', async () => {
 
         const div = document.createElement('div');
         div.className = 'drop-btn-itemname';
-        div.textContent = tech[index].itemname;
+        div.textContent = itemname;
         btn.appendChild(div);
 
-        itemnames.push(tech[index].itemname);
-
-        //void loadGetAvgPrice(tech[index].itemname, btn);
-
-
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
 
             if (!btn.classList.contains('btn-active')) {
-                // 기존 active 제거
                 buttons.forEach(b => b.classList.remove('btn-active'));
-                // 클릭한 버튼에 active 추가
                 btn.classList.add('btn-active');
             }
 
             const secondChild = btn.children[1];
             if (secondChild) {
-                navigator.clipboard.writeText(secondChild.textContent)
+                 navigator.clipboard.writeText(secondChild.textContent)
                     .then(() => showToast('🥴 클립보드에 복사되었습니다!'))
                     .catch(err => showToast('복사 실패 😢'));
             }
@@ -58,8 +76,22 @@ document.addEventListener('buttonsInserted', async () => {
 
     });
 
+    if (itemnames.length > 0 ) {
+        apiRes = await loadPostAvgPrices(itemnames);
+    }
+    results = results.concat(apiRes);
 
-    const results = await loadPostAvgPrices(itemnames);
+    apiRes.forEach(item => {
+        cache[item.item_name] = {
+            value: item.avg_price,
+            flag_al: item.flag_al,
+            expires: now + CACHE_TTL
+        };
+    });
+
+    console.log(results);
+
+    saveCache(cache);
 
     buttons.forEach(btn => {
         const itemData = results.find(r => r.item_name === btn.dataset.itemname);
@@ -68,8 +100,13 @@ document.addEventListener('buttonsInserted', async () => {
             div2.className = "drop-btn-itemprice";
 
             if (itemData.avg_price) {
+
                 if (btn.dataset.price * 1.05 >= itemData.avg_price) {
                     div2.textContent = btn.dataset.price + " 🪙";
+                }
+                else if (itemData.flag_al === "l") {
+                    btn.classList.add('btn-style2');
+                    div2.textContent = itemData.avg_price + " 🪙";
                 }
                 else {
                     btn.classList.add('btn-style1');
@@ -84,16 +121,13 @@ document.addEventListener('buttonsInserted', async () => {
 });
 
 function showToast(message, duration = 1500) {
-    // 기존 toast 있으면 제거
     const existing = document.getElementById('toast-msg');
     if (existing) existing.remove();
 
-    // toast div 생성
     const toast = document.createElement('div');
     toast.id = 'toast-msg';
     toast.textContent = message;
 
-    // 스타일
     Object.assign(toast.style, {
         position: 'fixed',
         bottom: '30px',
@@ -111,12 +145,10 @@ function showToast(message, duration = 1500) {
 
     document.body.appendChild(toast);
 
-    // 잠깐 fade-in
     requestAnimationFrame(() => {
         toast.style.opacity = 1;
     });
 
-    // 일정 시간 후 제거
     setTimeout(() => {
         toast.style.opacity = 0;
         toast.addEventListener('transitionend', () => toast.remove());
@@ -138,34 +170,5 @@ async function loadPostAvgPrices(itemNames) {
         return await response.json(); // 변수 없이 바로 반환
     } catch (error) {
         console.error("Failed to load prices:", error);
-    }
-}
-
-async function loadGetAvgPrice(itemName, btn) {
-    try {
-        const res = await fetch(
-            `https://shrill-union-acd2.sinant7616.workers.dev/?item_name=${encodeURIComponent(itemName)}`
-        );
-        if (!res.ok) throw new Error("API 호출 실패");
-
-        const data = await res.json();
-        console.log("API 응답:", data);
-
-        const div2 = document.createElement("div");
-        div2.className = "drop-btn-itemname";
-
-        // 데이터 구조에 따라 수정
-        if (Array.isArray(data) && data.length > 0 && data[0].avg_price) {
-            div2.textContent = "⚖️ : " + data[0].avg_price;
-        } else if (data.avg_price) {
-            div2.textContent = "⚖️ : " + data.avg_price;
-        } else {
-            div2.textContent = "가격 정보 없음";
-        }
-
-        btn.appendChild(div2);
-
-    } catch (err) {
-        console.error(err);
     }
 }
