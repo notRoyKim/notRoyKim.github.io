@@ -26,6 +26,26 @@ function saveCache(cache) {
     localStorage.setItem('auctionCache', JSON.stringify(cache));
 }
 
+function addLoadingDiv(el) {
+    const l1 = document.createElement('div');
+    const l2 = document.createElement('div');
+    const l3 = document.createElement('div');
+    l1.className = 'spinner-placeholder';
+    l2.className = 'spinner-box';
+    l3.className = 'spinner';
+    el.appendChild(l1);
+    l1.appendChild(l2);
+    l2.appendChild(l3);
+    for (let i = 0; i < 12; i++) {
+        const l4 = document.createElement('div');
+        l3.appendChild(l4);
+    }
+}
+
+function hideLoadingDiv(el) {
+    el.classList.add("hidden")
+}
+
 document.addEventListener('buttonsInserted', async () => {
     const buttons = document.querySelectorAll('.drop-btn');
     const itemnames = [];
@@ -42,10 +62,8 @@ document.addEventListener('buttonsInserted', async () => {
         btn.dataset.price = tech[index].price;
 
         if (cache[itemname] && now < cache[itemname].expires) {
-            console.log("캐시 존재함 : " + cache[itemname]);
             results.push({"item_name" : itemname, "avg_price" : cache[itemname].value, "flag_al" : cache[itemname].flag_al});
         } else {
-            console.log("캐시 없음 : " + itemname);
             itemnames.push(itemname);
         }
 
@@ -89,8 +107,6 @@ document.addEventListener('buttonsInserted', async () => {
         };
     });
 
-    console.log(results);
-
     saveCache(cache);
 
     buttons.forEach(btn => {
@@ -118,6 +134,8 @@ document.addEventListener('buttonsInserted', async () => {
             btn.appendChild(div2);
         }
     });
+    const ldivEl = document.querySelector("#tech-placeholder>.spinner-placeholder");
+    hideLoadingDiv(ldivEl)
 });
 
 function showToast(message, duration = 1500) {
@@ -146,11 +164,11 @@ function showToast(message, duration = 1500) {
     document.body.appendChild(toast);
 
     requestAnimationFrame(() => {
-        toast.style.opacity = 1;
+        toast.style.opacity = "1";
     });
 
     setTimeout(() => {
-        toast.style.opacity = 0;
+        toast.style.opacity = "0";
         toast.addEventListener('transitionend', () => toast.remove());
     }, duration);
 }
