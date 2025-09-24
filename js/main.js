@@ -13,6 +13,7 @@ async function initPage() {
   const tech = document.querySelector("#tech-placeholder");
   if(tech) {
       await loadHTML("tech-placeholder", "/tech.html");
+      await addLoadingDiv(tech)
       document.dispatchEvent(new Event('buttonsInserted'));
   }
   
