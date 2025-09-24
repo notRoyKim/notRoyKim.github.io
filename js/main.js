@@ -27,11 +27,13 @@ async function initPage() {
   }
   const menuBtn = document.getElementById("menuBtn");
   const lnb = document.getElementById("lnb");
+    const lnb_back = document.getElementById("lnb-background");
   const contents = document.getElementById("contents");
 
   if(menuBtn) {
     menuBtn.addEventListener("click", () => {
       lnb.classList.toggle("active");
+      lnb_back.classList.toggle("active");
       if(contents) contents.classList.toggle("shrink");
     });
   }

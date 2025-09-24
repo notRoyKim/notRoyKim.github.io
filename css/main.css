@@ -24,6 +24,7 @@ header {
     justify-content: center;
     width: 50px;
     height: 70px;
+    z-index: 100;
 }
 .hamburger {
     width: 25px;
@@ -45,14 +46,26 @@ header {
     top: 70px; /* header 밑 */
     left: -220px; /* 기본 화면 밖 */
     width: 220px;
-    height: calc(100% - 70px);
-    background: #eee;
     display: flex;
     flex-direction: column;
     padding: 10px;
     box-sizing: border-box;
     transition: left 0.3s ease;
     z-index: 100;
+}
+.lnb-background {
+    position: fixed;
+    left: -220px; /* 기본 화면 밖 */
+    top:0px;
+    bottom: 0px;
+    width: 220px;
+    background: #eee;
+    border-right: 1px solid lightgray;
+    transition: left 0.3s ease;
+    z-index: -50;
+}
+.lnb-background.active {
+    left: 0;
 }
 .lnb.active {
     left: 0;
@@ -74,6 +87,7 @@ header {
     background: linear-gradient(to bottom, #0d0d2b, #1a1a40); /* 밤하늘 그라데이션 */
     position: relative;
     overflow: hidden;
+    z-index: -100;
 }
 
 /* 별 집단 1 */
@@ -161,6 +175,7 @@ header {
     background: #c3c3c3;
     display: flex;
     border-bottom: #a7a7a7 1px solid;
+    z-index: -100;
 }
 
 main.contents {
