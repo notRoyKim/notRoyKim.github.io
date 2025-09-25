@@ -5,6 +5,7 @@ body, html {
     display: flex;
     flex-direction: column;
 }
+/*header start*/
 header {
     height: 70px;
     width: 100%;
@@ -18,13 +19,17 @@ header {
 }
 .menu-container {
     position: absolute;
-    left: 10px;              /* 원하는 여백 */
+    left: 0px;              /* 원하는 여백 */
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
+    width: 70px;
     height: 70px;
     z-index: 100;
+    border-right: 1px solid lightgray;
+}
+.menu-container:hover .hamburger span {
+    background: #4a80c2;
 }
 .hamburger {
     width: 25px;
@@ -39,16 +44,18 @@ header {
     background: #333;
     border-radius: 2px;
 }
+.hamburger span.active {
+    background: #666;
+}
 
 /* LNB */
 .lnb {
-    position: fixed;
+    position: absolute;
     top: 70px; /* header 밑 */
     left: -220px; /* 기본 화면 밖 */
     width: 220px;
     display: flex;
     flex-direction: column;
-    padding: 10px;
     box-sizing: border-box;
     transition: left 0.3s ease;
     z-index: 100;
@@ -59,7 +66,7 @@ header {
     top:0px;
     bottom: 0px;
     width: 220px;
-    background: #eee;
+    background: #f5f5f5;
     border-right: 1px solid lightgray;
     transition: left 0.3s ease;
     z-index: -50;
@@ -72,15 +79,25 @@ header {
 }
 .lnb div {
     padding: 12px;
-    margin-bottom: 8px;
-    background: #ddd;
-    border-radius: 4px;
     cursor: pointer;
     text-align: center;
+    line-height: 30px;
+    font-family: Nanum Myeongjo, sans-serif;
+    color: #1F3B6F;
+
+}
+.lnb a {
+    text-decoration: none;
 }
 .lnb div:hover {
-    background: #ccc;
+    background: #4a80c2;
+    color: #fff;
 }
+.lnb div.active {
+    background: #4a80c2;
+    color: #fff;
+}
+/*header ends*/
 .night-sky {
     width: 100%;
     height: 240px;

@@ -116,19 +116,19 @@ document.addEventListener('buttonsInserted', async () => {
             div2.className = "drop-btn-itemprice";
 
             if (itemData.avg_price) {
-
                 if (btn.dataset.price * 1.05 >= itemData.avg_price) {
-                    div2.textContent = btn.dataset.price + " 🪙";
-                }
-                else if (itemData.flag_al === "l") {
+                    div2.textContent = "🏠 " + btn.dataset.price + " 🪙";
+                } else if (itemData.flag_al === "l") {
                     btn.classList.add('btn-style2');
                     div2.textContent = itemData.avg_price + " 🪙";
-                }
-                else {
+                } else {
                     btn.classList.add('btn-style1');
                     div2.textContent = itemData.avg_price + " 🪙";
                 }
-            } else {
+            } else if (btn.dataset.price > 0) {
+                div2.textContent = "🏠 " + btn.dataset.price + " 🪙";
+            }
+            else {
                 div2.textContent = "가격 정보 없음";
             }
             btn.appendChild(div2);
