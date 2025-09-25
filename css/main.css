@@ -213,9 +213,8 @@ main.contents p {
     color: #555555;
 }
 .contents.shrink {
-    /*width: calc(100% - 220px);*/
     transition: width 0.3s ease;
-    /*margin-left: 220px;*/
+    z-index: -100;
 }
 footer {
     height: 80px;
