@@ -25,17 +25,28 @@ async function initPage() {
     waterScript.src = "/js/holywatersim.js";
     document.body.appendChild(waterScript);
   }
-  const menuBtn = document.getElementById("menuBtn");
-  const lnb = document.getElementById("lnb");
-    const lnb_back = document.getElementById("lnb-background");
-  const contents = document.getElementById("contents");
+    const menuBtn = document.querySelector(".menu-container");
 
-  if(menuBtn) {
-    menuBtn.addEventListener("click", () => {
-      lnb.classList.toggle("active");
-      lnb_back.classList.toggle("active");
-      if(contents) contents.classList.toggle("shrink");
-    });
+    if(menuBtn) {
+        const menuBtnSpans = document.querySelectorAll(".menu-container span");
+        const lnb = document.getElementById("lnb");
+        const lnb_back = document.getElementById("lnb-background");
+        const contents = document.getElementById("contents");
+
+        menuBtn.addEventListener("click", () => {
+            menuBtnSpans.forEach(span => {
+                span.classList.toggle("active");
+            });
+            lnb.classList.toggle("active");
+            lnb_back.classList.toggle("active");
+            if(contents) contents.classList.toggle("shrink");
+        });
+    }
+
+  const h1 = document.querySelector("h1");
+  if(h1) {
+      const menuName = h1.id;
+      document.querySelector("#"+menuName.substring(0,menuName.length- 3)).classList.toggle("active");
   }
 }
 
