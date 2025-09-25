@@ -1,20 +1,3 @@
-const tech = [
-    {itemname:'패러시우스 위스퍼링 애로우', price:0, imgUrl: '/assets/images/1420005.png'},
-    {itemname:'빛나는 구슬', price:0, imgUrl: '/assets/images/00002.png'},
-    {itemname:'각성된 힘의 결정', price:100000, imgUrl: '/assets/images/64644.png'},
-    {itemname:'미지의 파편', price:20000, imgUrl: '/assets/images/64108.png'},
-    {itemname:'오묘한 파편', price:20000, imgUrl: '/assets/images/64112.png'},
-    {itemname:'빛 바랜 파편', price:10000, imgUrl: '/assets/images/64102.png'},
-    {itemname:'원혼이 깃든 연금술 결정', price:0, imgUrl: '/assets/images/64124.png'},
-    {itemname:'원혼이 깃든 칼날', price:0, imgUrl: '/assets/images/64125.png'},
-    {itemname:'원혼이 깃든 고목 조각', price:0, imgUrl: '/assets/images/64126.png'},
-    {itemname:'단단하게 결정화된 광물 조각', price:30000, imgUrl: '/assets/images/64105.png'},
-    {itemname:'날카롭게 결정화된 광물 조각', price:30000, imgUrl: '/assets/images/64109.png'},
-    {itemname:'기아스 데버스테이션이 깃든 결정', price:10000, imgUrl: '/assets/images/64104.png'},
-    {itemname:'기아스 크러스티가 깃든 결정', price:10000, imgUrl: '/assets/images/64103.png'},
-    {itemname:'기아스 코어', price:7000, imgUrl: '/assets/images/64113.png'},
-]
-
 const CACHE_TTL = 1000 * 60 * 5;
 
 function loadCache() {
@@ -48,18 +31,21 @@ function hideLoadingDiv(el) {
 
 document.addEventListener('buttonsInserted', async () => {
     const buttons = document.querySelectorAll('.drop-btn');
+    const container = document.querySelector('.drop-placeholder');
+    const dName = container.dataset.dungeon;
     const itemnames = [];
     let results = [];
     let apiRes = [];
     const cache = loadCache();
     const now = Date.now();
 
+    const items = await loadItems(dName);
 
     buttons.forEach(btn => {
-        const index = parseInt(btn.value);
-        const itemname = tech[index].itemname;
+        const index = parseInt(btn.value) - 1;
+        const itemname = items[index].itemname;
         btn.dataset.itemname = itemname;
-        btn.dataset.price = tech[index].price;
+        btn.dataset.price = items[index].price;
 
         if (cache[itemname] && now < cache[itemname].expires) {
             results.push({"item_name" : itemname, "avg_price" : cache[itemname].value, "flag_al" : cache[itemname].flag_al});
@@ -69,7 +55,7 @@ document.addEventListener('buttonsInserted', async () => {
 
         const img = document.createElement('img');
         img.className = 'drop-btn-image';
-        img.src = tech[index].imgUrl;
+        img.src = items[index].imgUrl;
         btn.appendChild(img);
 
         const div = document.createElement('div');
@@ -189,4 +175,48 @@ async function loadPostAvgPrices(itemNames) {
     } catch (error) {
         console.error("Failed to load prices:", error);
     }
+}
+
+async function loadItems(dName) {
+    const response = await fetch("/assets/json/" + dName + ".json");
+    const data = await response.json();
+    return data.items;
+}
+
+function addDropDiv(el) {
+    const div = document.createElement('div');
+    div.className = 'button-grid';
+    div.id = 'btn-grid1'
+
+    const dName = el.dataset.dungeon;
+    if(dName) {
+        if(["seven", "abyssal", "illusion", "feth"].includes(dName)) {
+            div.classList.add('tech-grid');
+            el.appendChild(div);
+        } else if(["alby", "ciar", "rundal"].includes(dName)) {
+            div.classList.add('uladh-grid');
+            el.appendChild(div);
+        }  else {
+            console.log("error");
+            return;
+        }
+
+        fetch("/assets/json/drop.json")
+            .then(response => response.json()) // JSON 파싱
+            .then(data => {
+                const len = data[dName]; // 14
+                for (let i = 1; i <= len; i++) {
+                    const t_btn = document.createElement("button");
+                    t_btn.classList.add("drop-btn");
+                    t_btn.value = i.toString();
+                    div.appendChild(t_btn);
+                }
+                addLoadingDiv(el)
+                document.dispatchEvent(new Event('buttonsInserted'));
+            })
+            .catch(error => console.error("JSON 불러오기 오류:", error));
+    }
+}
+function f_initDrp(el) {
+    addDropDiv(el);
 }

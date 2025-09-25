@@ -1,0 +1,20 @@
+{
+  "items": [
+    {"itemname":"패러시우스 위스퍼링 애로우", "price":0, "imgUrl": "/assets/images/1420005.png"},
+    {"itemname":"빛나는 구슬", "price":0, "imgUrl": "/assets/images/00002.png"},
+    {"itemname":"각성된 힘의 결정", "price":100000, "imgUrl": "/assets/images/64644.png"},
+    {"itemname":"지축을 가르는 발굽 파편", "price":20000, "imgUrl": "/assets/images/64110.png"},
+    {"itemname":"지축을 뒤흔드는 발굽 파편", "price":20000, "imgUrl": "/assets/images/64106.png"},
+    {"itemname":"전장의 기운이 깃든 덮개", "price":10000, "imgUrl": "/assets/images/64100.png"},
+    {"itemname":"원혼이 깃든 연금술 결정", "price":0, "imgUrl": "/assets/images/64124.png"},
+    {"itemname":"원혼이 깃든 칼날", "price":0, "imgUrl": "/assets/images/64125.png"},
+    {"itemname":"원혼이 깃든 고목 조각", "price":0, "imgUrl": "/assets/images/64126.png"},
+    {"itemname":"단단하게 결정화된 광물 조각", "price":30000, "imgUrl": "/assets/images/64105.png"},
+    {"itemname":"날카롭게 결정화된 광물 조각", "price":30000, "imgUrl": "/assets/images/64109.png"},
+    {"itemname":"침식된 광물 조각", "price":30000, "imgUrl": "/assets/images/64099.png"},
+    {"itemname":"허상의 잔재", "price":0, "imgUrl": "/assets/images/5100240.png"},
+    {"itemname":"기아스 데버스테이션이 깃든 결정", "price":10000, "imgUrl": "/assets/images/64104.png"},
+    {"itemname":"기아스 크러스티가 깃든 결정", "price":10000, "imgUrl": "/assets/images/64103.png"},
+    {"itemname":"기아스 코어", "price":7000, "imgUrl": "/assets/images/64113.png"}
+  ]
+}
