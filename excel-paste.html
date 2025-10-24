@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>엑셀 붙여넣기 테이블</title>
+<style>
+  body { font-family: sans-serif; padding: 20px; }
+  #pasteArea {
+    width: 100%; min-height: 80px;
+    border: 2px dashed #aaa;
+    padding: 10px; margin-bottom: 20px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  td.name-cell {
+    cursor: pointer;
+    color: #007bff;
+  }
+  td.name-cell:hover {
+    background-color: #eef;
+  }
+</style>
+</head>
+<body>
+  <h2>엑셀 붙여넣기 입력</h2>
+  <div id="pasteArea" contenteditable="true" placeholder="엑셀 데이터를 여기에 붙여넣으세요">
+    여기에 엑셀 데이터를 붙여넣으세요 (Ctrl+V)
+  </div>
+
+  <div id="tableContainer"></div>
+
+<script>
+  const pasteArea = document.getElementById('pasteArea');
+  const tableContainer = document.getElementById('tableContainer');
+
+  pasteArea.addEventListener('paste', (e) => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text');
+    makeTable(text);
+  });
+
+  function makeTable(text) {
+    const rows = text.trim().split(/\r?\n/);
+    const data = rows.map(r => r.split(/\t/)); // 탭으로 분리
+
+    let html = '<table><thead><tr><th>이름</th><th>생년월일</th></tr></thead><tbody>';
+    data.forEach(row => {
+      const name = row[0]?.trim() || '';
+      const birth = row[1]?.trim() || '';
+      html += `<tr>
+        <td class="name-cell" data-name="${name}">${name}</td>
+        <td>${birth}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+
+    tableContainer.innerHTML = html;
+
+    // 이름 셀 클릭 시 복사 기능 추가
+    document.querySelectorAll('.name-cell').forEach(td => {
+      td.addEventListener('click', async () => {
+        const name = td.dataset.name;
+        try {
+          await navigator.clipboard.writeText(name);
+          td.style.backgroundColor = '#d4f8d4';
+          setTimeout(() => td.style.backgroundColor = '', 500);
+        } catch (err) {
+          alert('복사 실패: ' + err);
+        }
+      });
+    });
+  }
+</script>
+</body>
+</html>
