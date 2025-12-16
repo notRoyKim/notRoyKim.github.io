@@ -37,6 +37,7 @@ document.addEventListener('buttonsInserted', async () => {
     let results = [];
     let apiRes = [];
     const cache = loadCache();
+    console.log(cache);
     const now = Date.now();
 
     const items = await loadItems(dName);
@@ -123,41 +124,6 @@ document.addEventListener('buttonsInserted', async () => {
     const ldivEl = document.querySelector("#tech-placeholder>.spinner-placeholder");
     hideLoadingDiv(ldivEl)
 });
-
-function showToast(message, duration = 1500) {
-    const existing = document.getElementById('toast-msg');
-    if (existing) existing.remove();
-
-    const toast = document.createElement('div');
-    toast.id = 'toast-msg';
-    toast.textContent = message;
-
-    Object.assign(toast.style, {
-        position: 'fixed',
-        bottom: '30px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        backgroundColor: 'rgba(0,0,0,0.8)',
-        color: 'white',
-        padding: '10px 20px',
-        borderRadius: '20px',
-        fontSize: '14px',
-        zIndex: 9999,
-        opacity: 0,
-        transition: 'opacity 0.3s ease'
-    });
-
-    document.body.appendChild(toast);
-
-    requestAnimationFrame(() => {
-        toast.style.opacity = "1";
-    });
-
-    setTimeout(() => {
-        toast.style.opacity = "0";
-        toast.addEventListener('transitionend', () => toast.remove());
-    }, duration);
-}
 
 async function loadPostAvgPrices(itemNames) {
     try {

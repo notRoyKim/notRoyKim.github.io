@@ -1,0 +1,226 @@
+.asc-placeholder {
+    margin-top: 50px;
+    display:flex;
+    position: relative;
+}
+.asc-btn-div {
+    display: flex;
+    flex-direction: row-reverse;
+    position: absolute;
+    height: 50px;
+    width: 100%;
+}
+/*
+.asc-btn {
+    border-radius: 6px;
+    margin-right: 20px;
+    background: #ebecf0;
+    width: 80px;
+}
+ */
+.asc-btn {
+    padding: 10px 18px;
+    margin-right: 20px;
+    border-radius: 10px;
+    border: 1px solid #f2b8b5;
+    background: #fff5f5;
+    color: #d32f2f;
+    font-size: 14px;
+    line-height: 28px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.asc-btn:hover {
+    background: #ffe3e3;
+    border-color: #e57373;
+}
+.asc-btn.active {
+    transform: scale(0.96);
+}
+.asc-board {
+    width: 33%;
+    margin-top: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.asc-column {
+    background: #ebecf0;
+    border-radius: 8px;
+    padding: 8px;
+    padding-bottom: 50px;
+    min-height: 400px;
+}
+.asc-column h3 .asc-tyron{
+    position: absolute;
+    width: 13px;
+    height: 100%;
+    top: 0;
+    left: -21px;
+    background: #1b1f77;
+    border-radius: 4px;
+}
+.asc-column h3 .asc-polar{
+    position: absolute;
+    width: 9px;
+    height: 100%;
+    top: 0;
+    left: -19px;
+    background: #9fbea0;
+    border-radius: 4px;
+}
+.asc-column h3 {
+    position: relative;
+    margin: 8px;
+    font-size: 14px;
+    padding-bottom: 5px;
+    left: 21px;
+}
+.asc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.asc-card {
+    position: relative;
+    background: white;
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.asc-handle {
+    cursor: grab;
+    margin-right: 8px;
+    color: #999;
+    user-select: none;
+    font-size: 20px;
+}
+.card-active .asc-handle {
+    color:#FFF
+}
+.asc-content {
+    flex: 1;
+    font-size: 13px;
+}
+.dragging {
+    opacity: 0.5;
+}
+.drag-result {
+    min-height: 1000px;
+}
+.drag-result .asc-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.card-active {
+    background: #5c91d3;
+    color: white;
+}
+/*
+.asc-column.drag-over {
+    outline: 2px dashed #4c9aff;
+}
+*/
+.asc-class {
+    position: absolute;
+    height: 60%;
+    width: 3%;
+    right: 2%;
+    border-radius: 5px;
+    transition: width 0.6s ease;
+    text-align: center;
+    font-size:0;
+}
+
+.asc-class.animate {
+    width: 10%;
+    font-size: 18px;
+}
+
+.asc-class-a {
+    background: #FADADD;
+}
+.asc-class-b {
+    background: #CFE8FF;
+}
+.asc-class-c {
+    background: #FFF9C4;
+}
+
+.tooltip-wrap::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 6px 10px;
+    font-size: 12px;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease;
+}
+
+.tooltip-wrap:hover::after {
+    opacity: 1;
+}
+
+.asc-result {
+    margin-top: 50px;
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 12px;
+    color: #000000;
+    font-family: system-ui, sans-serif;
+}
+
+.asc-result h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #000000;
+}
+
+.asc-result > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ebecf0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.asc-result > div:last-child {
+    margin-bottom: 0;
+}
+
+.asc-result span {
+    font-weight: 600;
+}
+
+.asc-exp span {
+    color: #72a1d8; /* 파랑 */
+}
+
+.asc-count span:first-child {
+    color: #6dc6a6; /* 초록 */
+}
+
+.asc-gold span {
+    color: #a5986f; /* 빨강 */
+}
+
+.asc-result span {
+    transition: transform .15s ease, color .15s ease;
+}
+
+.asc-result span.updated {
+    transform: scale(1.1);
+}
