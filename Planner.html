@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/planner.css">
+    <script type="module" src="/js/main.js"></script>
+    <script src="/js/planner.js"></script>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="contents" id="contents">
+        <h1 id="Planner-h1">생활 협회 의뢰</h1>
+        <p>생활 협회 의뢰 아이템입니다.</p>
+        <div class="pln-placeholder">
+            <button id="timeBtn" data-days="5">
+                클릭
+            </button>
+
+            <div class="top-bar">
+                <div class="button-wrapper">
+                    <button id="addBtn">아이템 추가</button>
+                    <div id="contextMenu" class="context-menu hidden">
+                        <div class="matrix-grid" id="matrixGrid">
+                        </div>
+                        <div class="matrix-label" id="matrixLabel">0 x 0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-container" id="gridContainer">
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+</body>
+</html>
