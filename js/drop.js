@@ -127,7 +127,7 @@ document.addEventListener('buttonsInserted', async () => {
 
 async function loadPostAvgPrices(itemNames) {
     try {
-        const response = await fetch("https://shrill-union-acd2.sinant7616.workers.dev/", {
+        const response = await fetch("https://shrill-union-acd2.sinant7616.workers.dev/drop", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

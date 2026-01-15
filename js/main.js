@@ -1,22 +1,36 @@
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js");
+    });
+}
+
 async function loadHTML(id, file) {
   const res = await fetch(file);
   document.getElementById(id).innerHTML = await res.text();
 }
 
 async function initPage() {
-  await loadHTML("header-placeholder", "/header.html");
-  await loadHTML("footer-placeholder", "/footer.html");
+    await loadHTML("header-placeholder", "/header.html");
+    await loadHTML("footer-placeholder", "/footer.html");
 
-  const drpHolder = document.querySelector(".drop-placeholder");
-  if (drpHolder) {
+    const drpHolder = document.querySelector(".drop-placeholder");
+    if (drpHolder) {
       f_initDrp(drpHolder);
-  }
-  const ascHolder = document.querySelector(".asc-placeholder");
-  if (ascHolder) {
+    }
+    const ascHolder = document.querySelector(".asc-placeholder");
+    if (ascHolder) {
       f_initAsc(ascHolder);
-  }
+    }
+    const talFarmHolder = document.querySelector(".talFarm-placeholder");
+    if (talFarmHolder) {
+        f_initTal(talFarmHolder);
+    }
+    const plnHolder = document.querySelector(".pln-placeholder");
+    if (plnHolder) {
+        f_initPln(plnHolder);
+    }
 
-  const holywater = document.querySelector("#holywater-placeholder");
+  const holywater = document.querySelector(".holywater-placeholder");
   if(holywater) {
     await loadHTML("holywater-placeholder", "/holywatersim.html");
 
@@ -47,6 +61,8 @@ async function initPage() {
       const menuName = h1.id;
       document.querySelector("#"+menuName.substring(0,menuName.length- 3)).classList.toggle("active");
   }
+
+    registerPush();
 }
 
 document.addEventListener("DOMContentLoaded", initPage);
