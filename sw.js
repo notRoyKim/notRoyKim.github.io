@@ -7,7 +7,7 @@ const ASSETS = [
     "/water.html",
     "/dungeons/Abyssal.html",
     "/dungeons/Alby.html",
-    "/dungeons/feth.html",
+    "/dungeons/Feth.html",
     "/dungeons/Illusion.html",
     "/dungeons/Seven.html",
 //css

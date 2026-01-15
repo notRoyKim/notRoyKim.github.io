@@ -4,6 +4,10 @@ if ("serviceWorker" in navigator) {
     });
 }
 
+window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault(); // 설치 배너 차단
+});
+
 async function loadHTML(id, file) {
   const res = await fetch(file);
   document.getElementById(id).innerHTML = await res.text();
