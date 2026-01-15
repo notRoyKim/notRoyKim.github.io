@@ -1,6 +1,6 @@
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js");
+        navigator.serviceWorker.register("/sw.js");
     });
 }
 
@@ -65,8 +65,6 @@ async function initPage() {
       const menuName = h1.id;
       document.querySelector("#"+menuName.substring(0,menuName.length- 3)).classList.toggle("active");
   }
-
-    registerPush();
 }
 
 document.addEventListener("DOMContentLoaded", initPage);
