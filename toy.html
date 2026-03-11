@@ -1,0 +1,32 @@
+<script>
+  (function () {
+    var ua = navigator.userAgent.toLowerCase();
+
+    var isIOS = /iphone|ipad|ipod/.test(ua);
+    var isSafari = /safari/.test(ua) && !/crios|fxios|edgios/.test(ua);
+    var isChromeIOS = /crios/.test(ua);
+
+    // 네이버 / 카카오 / 인앱 브라우저 감지
+    var isInApp = /naver|kakaotalk|instagram|fbav|line/.test(ua);
+
+    if (isIOS && !isSafari && !isChromeIOS) {
+
+        // 인앱 브라우저면 안내 후 사파리 열기 유도
+        alert("iOS에서는 Safari 또는 Chrome 브라우저에서 열어주세요.");
+
+        // Safari로 열기 시도
+        window.location.href = "x-safari-" + window.location.href;
+    }
+})();
+</script>
+
+<!DOCTYPE html>
+<html>
+<title>HTML Tutorial</title>
+<body>
+
+<h1>This is a heading</h1>
+<p>This is a paragraph.</p>
+
+</body>
+</html>
