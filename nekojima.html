@@ -205,7 +205,7 @@
         let dayOffset = 0; // 날짜(이동 횟수) 오프셋
 
         cl = loadCache();
-        const selectedFilters = new Set(cl);
+        const selectedFilters = new Set(Array.isArray(cl) ? cl : []);
 
         const START_DATE_ISO = '2026-05-14T07:00:00+09:00';
 
