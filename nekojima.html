@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="mabinogi@kr item auction proj" />
+    <meta name="keywords" content="mabinogi, 마비노기, 마비노기 경매장, 두두섬" />
+    <meta name="author" content="notRoyKim@github" />
+    <meta property="og:title" content="마비노기 쿠폰 nRk" />
+    <meta property="og:description" content="notRoyKim@github 깃허브 페이지입니다." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="notroykim.github.io" />
+    <meta property="og:image" content="https://notroykim.github.io/android-chrome-192x192.png" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="마비노기 두두섬 nRk" />
+    <meta name="twitter:description" content="notRoyKim@github 깃허브 페이지입니다." />
+    <meta name="twitter:image" content="https://notroykim.github.io/android-chrome-192x192.png" />
+    <title>마비노기 두두섬 - nRK</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <script src="/js/main.js"></script>
+
+    <style>
+
+        /* 492 x 507 지도 영역 */
+        #map {
+            width: 492px;
+            height: 507px;
+            background-color: #f0f0f0;
+            background-image: url('/assets/images/nekojima.png');
+            background-size: cover;
+            position: relative;
+            border: 2px solid #ccc;
+            overflow: hidden;
+            display: flex;
+        }
+
+        #nekojima {
+            display: flex;
+        }
+
+        .sidebar {
+            margin-left: 120px;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .sidebar h3 {
+            user-select: none;
+        }
+
+        /* 필터 버튼 스타일 */
+        .filter-btn {
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            transition: all 0.2s ease-in-out;
+            /* 버튼 내부 텍스트 드래그 방지 */
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .filter-btn:hover {
+            background-color: #e9ecef;
+        }
+
+        /* 필터 버튼 활성화(선택됨) 상태 */
+        .filter-btn.active {
+            background-color: #ff4757;
+            color: white;
+            border-color: #ff4757;
+        }
+
+        /* 10개의 고정 좌표를 표시할 작은 점 */
+        .fixed-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #FFFF00; /* 점의 색상 */
+            border-radius: 50%; /* 동그랗게 */
+            transform: translate(-50%, -50%); /* 중심을 좌표에 맞춤 */
+            z-index: 1; /* 움직이는 숫자보다 아래에 위치하도록 설정 */
+        }
+
+        /* 배경이 없는 텍스트 형태의 마커 */
+        .marker {
+            position: absolute;
+            font-size: 14px; /* 숫자 크기 */
+            font-weight: 900;
+            color: #ff0000; /* 숫자 색상 */
+            /* 지도 배경과 겹쳐도 잘 보이도록 얇은 흰색 테두리 효과 부여 */
+            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+
+            /* 숫자의 중심을 좌표에 맞춤 */
+            transform: translate(-50%, -50%);
+
+            /* 좌표가 바뀔 때 부드럽게 이동하는 애니메이션 효과 */
+            transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
+            z-index: 2; /* 고정된 점보다 항상 위에 보이도록 설정 */
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #status {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main class="contents" id="contents">
+    <h1 class="cont-child">두근두근 아일랜드 타임캡슐</h1>
+    <p class="cont-child">2026년 5월 14일부터 시작된 타임캡슐 이벤트 지도입니다.</p>
+
+    <div id="nekojima">
+        <div id="map"></div>
+
+        <!-- 마커 필터 사이드바 -->
+        <div class="sidebar" id="filterSidebar">
+            <h3>내 캐릭터만 표시</h3>
+            <button class="filter-btn" data-num="1">1</button>
+            <button class="filter-btn" data-num="2">2</button>
+            <button class="filter-btn" data-num="3">3</button>
+            <button class="filter-btn" data-num="4">4</button>
+            <button class="filter-btn" data-num="5">5</button>
+            <button class="filter-btn" data-num="6">6</button>
+        </div>
+    </div>
+
+    <!-- TEST
+    <div class="controls">
+        <button id="nextBtn">다음 날로 이동</button>
+        <div id="status">Day 1</div>
+    </div>
+    -->
+
+    <script>
+
+        let cl = [];
+
+        function loadCache() {
+            const raw = localStorage.getItem('nekoCache');
+            return raw ? JSON.parse(raw) : {};
+        }
+
+        function saveCache(cache) {
+            localStorage.setItem('nekoCache', JSON.stringify(cache));
+        }
+
+        // 고정 좌표 큐 x (10개의 위치)
+        // 실제 사용할 지도의 x, y 픽셀 좌표로 수정해주세요.
+        const fixedCoords = [
+            { x: 98, y: 290 }, // x[1]
+            { x: 57, y: 324 }, // x[2]
+            { x: 90, y: 426 }, // x[3]
+            { x: 50, y: 260 }, // x[4]
+            { x: 140, y: 295 }, // x[5]
+            { x: 70, y: 380 }, // x[6]
+            { x: 135, y: 472 }, // x[7]
+            { x: 150, y: 305 }, // x[8]
+            { x: 90, y: 260 }, // x[9]
+            { x: 80, y: 460 }  // x[10]
+        ];
+
+        // y마커 리스트 (1부터 6까지)
+        const markerNumbers = [1, 2, 3, 4, 5, 6];
+
+        // 마커 DOM 요소를 저장할 배열
+        const markerElements = [];
+
+        const mapElement = document.getElementById('map');
+        const statusElement = document.getElementById('status');
+        const nextBtn = document.getElementById('nextBtn');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        let dayOffset = 0; // 날짜(이동 횟수) 오프셋
+
+        cl = loadCache();
+        const selectedFilters = new Set(cl);
+
+        const START_DATE_ISO = '2026-05-14T07:00:00+09:00';
+
+        // 시간 기반으로 Offset 계산
+        function calculateAutoOffset() {
+            const baseDate = new Date(START_DATE_ISO).getTime();
+            const now = new Date();
+            const currentTime = now.getTime();
+
+            // 기준 시간 이전이면 무조건 Day 1 (offset 0)으로 처리
+            if (currentTime < baseDate) {
+                dayOffset = 0;
+            } else {
+                // 경과 시간을 밀리초 단위로 계산 후, 하루(24시간) 단위로 나눔
+                const diffMs = currentTime - baseDate;
+                const msPerDay = 1000 * 60 * 60 * 24;
+                dayOffset = Math.floor(diffMs / msPerDay) % 10;
+            }
+        }
+
+        // 1. 고정된 좌표에 작은 점들을 그리는 함수
+        function initFixedPoints() {
+            fixedCoords.forEach(coord => {
+                const point = document.createElement('div');
+                point.className = 'fixed-point';
+                point.style.left = coord.x + 'px';
+                point.style.top = coord.y + 'px';
+                mapElement.appendChild(point);
+            });
+        }
+
+        // 초기화: 6개의 마커 DOM 요소를 생성해서 지도에 추가
+        function initMarkers() {
+            markerNumbers.forEach(num => {
+                const el = document.createElement('div');
+                el.className = 'marker';
+                el.textContent = num;
+                mapElement.appendChild(el);
+                markerElements.push(el); // 생성한 마커를 배열에 보관
+            });
+            updateMarkerPositions();
+        }
+
+        // 마커 위치 업데이트 함수
+        function updateMarkerPositions() {
+            for (let i = 0; i < markerNumbers.length; i++) {
+                // y[i] 마커가 위치할 x 큐의 인덱스 계산
+                // 예: dayOffset이 1(둘째 날)이면, y[1](인덱스 0)은 x[2](인덱스 1)에 위치
+                const targetCoordIndex = (i + dayOffset) % fixedCoords.length;
+                const targetCoord = fixedCoords[targetCoordIndex];
+
+                // CSS left, top 변경 (transition으로 인해 부드럽게 이동)
+                markerElements[i].style.left = targetCoord.x + 'px';
+                markerElements[i].style.top = targetCoord.y + 'px';
+            }
+            //debug 용
+            //statusElement.textContent = `Day ${dayOffset + 1} (마커 1의 위치: 좌표 ${((dayOffset) % fixedCoords.length) + 1})`;
+        }
+
+        /* debug 용 버튼
+        // 버튼 클릭 시 다음 날로 1칸 이동
+        nextBtn.addEventListener('click', () => {
+            dayOffset++;
+            updateMarkerPositions();
+        });
+         */
+
+        function updateMarkerVisibility() {
+            markerElements.forEach((el, index) => {
+                const markerNum = markerNumbers[index];
+                if (selectedFilters.size === 0 || selectedFilters.has(markerNum)) {
+                    el.style.display = 'block';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+        }
+
+        filterBtns.forEach(btn => {
+            const num = parseInt(btn.dataset.num);
+            if (selectedFilters.has(num)) {
+                btn.classList.add('active');
+            }
+            btn.addEventListener('click', () => {
+                const num = parseInt(btn.dataset.num);
+                if (selectedFilters.has(num)) {
+                    selectedFilters.delete(num);
+                    btn.classList.remove('active');
+                } else {
+                    selectedFilters.add(num);
+                    btn.classList.add('active');
+                }
+                updateMarkerVisibility();
+                saveCache([...selectedFilters]);
+            });
+        });
+
+        console.log(cl)
+        // 페이지 로드 시 마커 생성 및 초기 배치
+        calculateAutoOffset();
+        initFixedPoints();
+        initMarkers();
+        updateMarkerVisibility();
+    </script>
+</main>
+
+<div id="footer-placeholder"></div>
+</body>
+</html>
