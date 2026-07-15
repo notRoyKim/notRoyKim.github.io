@@ -47,56 +47,117 @@ header {
 .hamburger span.active {
     background: #666;
 }
-
-/* LNB */
+/* 기본 LNB 뼈대 */
 .lnb {
     position: absolute;
-    top: 70px; /* header 밑 */
-    left: -220px; /* 기본 화면 밖 */
+    top: 70px;
+    left: -220px;
     width: 220px;
-    display: flex;
-    flex-direction: column;
+    background: #f5f5f5;
     box-sizing: border-box;
     transition: left 0.3s ease;
     z-index: 100;
-}
-.lnb-background {
-    position: fixed;
-    left: -220px; /* 기본 화면 밖 */
-    top:0px;
-    bottom: 0px;
-    width: 220px;
-    background: #f5f5f5;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
     border-right: 1px solid lightgray;
-    transition: left 0.3s ease;
-    z-index: -50;
 }
-.lnb-background.active {
-    left: 0;
-}
+
 .lnb.active {
     left: 0;
 }
-.lnb div {
-    padding: 12px;
-    cursor: pointer;
-    text-align: center;
-    line-height: 30px;
-    font-family: Nanum Myeongjo, sans-serif;
-    color: #1F3B6F;
+.lnb-has-children.lnb-open > ul {
+    display: block;
+}
 
+/* 리스트 기본 속성 초기화 */
+.lnb ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
+
+.lnb li {
+    width: 100%;
+}
+
+/* 메뉴 아이템 공통 스타일 (클릭 가능한 타이틀과 링크) */
+.lnb .lnb-menu-title,
 .lnb a {
+    display: block;
+    padding: 12px 15px;
+    cursor: pointer;
+    font-family: 'Nanum Myeongjo', sans-serif;
+    color: #1F3B6F;
     text-decoration: none;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background 0.2s, color 0.2s;
+    line-height: 24px;
 }
-.lnb div:hover {
+
+/* 호버 및 활성화 색상 */
+.lnb .lnb-menu-title:hover,
+.lnb a:hover {
     background: #4a80c2;
     color: #fff;
 }
-.lnb div.active {
-    background: #4a80c2;
-    color: #fff;
+
+/* ==================================
+   Depth 시각적 구분 (들여쓰기와 배경색)
+===================================== */
+/* Depth 2 기본 숨김 및 디자인 */
+.lnb-depth-2 {
+    display: none;
+    background: #ebebeb;
 }
+.lnb-depth-2 .lnb-menu-title,
+.lnb-depth-2 a {
+    padding-left: 25px;
+    font-size: 0.95em;
+}
+
+/* Depth 3 기본 숨김 및 디자인 */
+.lnb-depth-3 {
+    display: none;
+    background: #e0e0e0;
+}
+.lnb-depth-3 a {
+    padding-left: 35px;
+    font-size: 0.9em;
+}
+
+/* 1. 아이콘 공통 영역 설정 */
+.lnb-has-children > .lnb-menu-title::after {
+    content: '';
+    float: right;
+    width: 16px;         /* 이미지 가로 크기 (에셋 크기에 맞게 조절 가능) */
+    height: 16px;        /* 이미지 세로 크기 (에셋 크기에 맞게 조절 가능) */
+    margin-top: 4px;     /* 글자와의 세로 중앙 정렬을 맞추기 위한 여백 */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    transition: transform 0.3s ease; /* 열릴 때 부드러운 회전 효과 */
+}
+
+/* 2. Depth 1 전용 아이콘 이미지 */
+.lnb-depth-1 > .lnb-has-children > .lnb-menu-title::after {
+    background-image: url('/assets/arr_menu_down.png');
+}
+
+/* 3. Depth 2 전용 아이콘 이미지 */
+.lnb-depth-2 > .lnb-has-children > .lnb-menu-title::after {
+    background-image: url('/assets/btn_menu_more.png');
+}
+
+
+/* ==================================
+   메뉴가 열렸을 때(lnb-open) 아이콘 회전 설정
+===================================== */
+
+/* Depth 1: 열렸을 때 아래쪽 화살표가 위를 바라보도록 180도 회전 */
+.lnb-depth-1 > .lnb-has-children.lnb-open > .lnb-menu-title::after {
+    transform: rotate(180deg);
+}
+
 /*header ends*/
 .night-sky {
     width: 100%;
@@ -216,6 +277,74 @@ main.contents p {
     transition: width 0.3s ease;
     z-index: -100;
 }
+
+
+.spinner {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+}
+.spinner-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(211, 211, 211, 0.4);
+    z-index: 10;
+}
+.spinner-box {
+    width: 150px;
+    height: 150px;
+    background-color: white;
+    border-radius: 20%;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+/* loading spinner*/
+.spinner div {
+    transform-origin: 30px 40px;
+    animation: spin 1.2s linear infinite;
+    position: absolute;
+    left: 10px;
+    width: 6px;
+    height: 24px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #2918ac, #8fa4ff);
+}
+
+.spinner div:nth-child(1) { transform: rotate(0deg); animation-delay: -1.1s; }
+.spinner div:nth-child(2) { transform: rotate(30deg); animation-delay: -1s; }
+.spinner div:nth-child(3) { transform: rotate(60deg); animation-delay: -0.9s; }
+.spinner div:nth-child(4) { transform: rotate(90deg); animation-delay: -0.8s; }
+.spinner div:nth-child(5) { transform: rotate(120deg); animation-delay: -0.7s; }
+.spinner div:nth-child(6) { transform: rotate(150deg); animation-delay: -0.6s; }
+.spinner div:nth-child(7) { transform: rotate(180deg); animation-delay: -0.5s; }
+.spinner div:nth-child(8) { transform: rotate(210deg); animation-delay: -0.4s; }
+.spinner div:nth-child(9) { transform: rotate(240deg); animation-delay: -0.3s; }
+.spinner div:nth-child(10) { transform: rotate(270deg); animation-delay: -0.2s; }
+.spinner div:nth-child(11) { transform: rotate(300deg); animation-delay: -0.1s; }
+.spinner div:nth-child(12) { transform: rotate(330deg); animation-delay: 0s; }
+
+@keyframes spin {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+.hidden {
+    display: none;
+}
+
 footer {
     height: 80px;
     width: 100%;
@@ -241,4 +370,57 @@ footer {
 
 .logo-img {
     height: 100%;
+}
+/* ===================================================
+   [PC 기본 스타일] 기존 방식: absolute + 배경 div 분리
+=================================================== */
+.lnb-background {
+    position: fixed;
+    left: -220px;
+    top: 0px;
+    bottom: 0px;
+    width: 220px;
+    background: #f5f5f5;
+    border-right: 1px solid lightgray;
+    transition: left 0.3s ease;
+    z-index: -50;
+}
+
+.lnb-background.active {
+    left: 0;
+}
+
+.lnb {
+    position: absolute; /* PC: 문서 기준 */
+    top: 70px;
+    left: -220px;
+    width: 220px;
+    /* PC는 배경색과 테두리를 lnb-background가 담당하므로 생략 */
+    box-sizing: border-box;
+    transition: left 0.3s ease;
+    z-index: 100;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+}
+
+/* ===================================================
+   [모바일 스타일] 뷰포트 너비 768px 이하일 때 적용
+=================================================== */
+@media screen and (max-width: 768px) {
+    header {
+        position: sticky; /* 모바일: 헤더 상단 고정 */
+        top: 0;
+        z-index: 200;
+    }
+
+    .lnb-background {
+        display: none !important; /* 모바일: 배경 레이어 숨김 (JS가 건드려도 무시) */
+    }
+
+    .lnb {
+        position: fixed; /* 모바일: 화면 기준 고정 */
+        background: #f5f5f5; /* 모바일: lnb 자체에 배경색 추가 */
+        border-right: 1px solid lightgray; /* 모바일: 테두리 추가 */
+        /* top, left, width 등은 PC 스타일을 그대로 상속받음 */
+    }
 }

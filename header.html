@@ -10,24 +10,55 @@
             </div>
         </div>
         <img src="/android-chrome-192x192.png" class="logo-img" onclick="location.href='/'" alt="NRK 로고">
-        <div class="lnb-background" id="lnb-background"></div>
         <nav class="lnb" id="lnb">
-            <a href="/dungeons/Alby"><div id="alby">하드모드 알비 상급</div></a>
-            <a href="#" onclick="alert('미완성')"><div id="ciar">하드모드 키아 상급</div></a>
-            <a href="#" onclick="alert('미완성')"><div id="rundal">하드모드 룬다 상급</div></a>
-            <a href="/dungeons/Illusion"><div id="illusion">되살아난 허상</div></a>
-            <a href="/dungeons/Feth"><div id="feth">페스 피아다</div></a>
-            <a href="/dungeons/Seven"><div id="seven">일곱번의 악몽</div></a>
-            <a href="/dungeons/Abyssal"><div id="abyssal">깨어난 심연의 군주</div></a>
-            <a href="/Coupons"><div id="coupons">마비노기 쿠폰</div></a>
-                <!--
-            <a href="/water"><div id="water">성수 시뮬레이터</div></a>
-                -->
-            <a href="/Association"><div id="Asc">생활 협회 의뢰</div></a>
-            <a href="/Taltaine"><div id="TalFarm">탈틴 농장 대시보드</div></a>
-            <a href="/Planner"><div id="Planner">플래너</div></a>
-            <a href="/nekojima"><div id="Nekojima">두두섬 타임캡슐</div></a>
+            <ul class="lnb-depth-1">
+
+                <li class="lnb-has-children">
+                    <div class="lnb-menu-title">던전 드랍 정보</div>
+
+                    <ul class="lnb-depth-2">
+                        <li class="lnb-has-children">
+                            <div class="lnb-menu-title">울라 던전</div>
+                            <ul class="lnb-depth-3">
+                                <li><a href="/dungeons/Alby" id="alby">하드모드 알비 상급</a></li>
+                                <li><a href="/dungeons/Ciar"  id="ciar">하드모드 키아 상급</a></li>
+                                <li><a href="/dungeons/Rundal"  id="rundal">하드모드 룬다 상급</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="lnb-has-children">
+                            <div class="lnb-menu-title">테흐 두인</div>
+                            <ul class="lnb-depth-3">
+                                <li><a href="/dungeons/Illusion" id="illusion">되살아난 허상</a></li>
+                                <li><a href="/dungeons/Feth" id="feth">페스 피아다</a></li>
+                                <li><a href="/dungeons/Seven" id="seven">일곱번의 악몽</a></li>
+                                <li><a href="/dungeons/Abyssal" id="abyssal">깨어난 심연의 군주</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="lnb-has-children">
+                    <div class="lnb-menu-title">유틸리티</div>
+
+                    <ul class="lnb-depth-2">
+                        <li><a href="/Coupons" id="coupons">마비노기 쿠폰</a></li>
+                        <li><a href="/Association" id="Asc">생활 협회 의뢰</a></li>
+                        <li><a href="/Taltaine" id="TalFarm">탈틴 농장 대시보드</a></li>
+                        <li><a href="/Planner" id="Planner">플래너</a></li>
+                    </ul>
+                </li>
+
+                <li class="lnb-has-children">
+                    <div class="lnb-menu-title">이벤트</div>
+
+                    <ul class="lnb-depth-2">
+                        <li><a href="/nekojima" id="Nekojima">두두섬 타임캡슐</a></li>
+                    </ul>
+                </li>
+            </ul>
         </nav>
+        <div id="lnb-background" class="lnb-background"></div>
     </header>
 </body>
 <script src="/push.js"></script>

@@ -19,8 +19,6 @@
 }
  */
 .asc-btn {
-    padding: 10px 18px;
-    margin-right: 20px;
     border-radius: 10px;
     border: 1px solid #f2b8b5;
     background: #fff5f5;
@@ -30,6 +28,13 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+.asc-btn-delete {
+    padding: 10px 18px;
+    margin-right: 20px;
+}
+.asc-btn-cal {
+    padding: 5px 18px;
 }
 .asc-btn:hover {
     background: #ffe3e3;
@@ -171,6 +176,7 @@
 }
 
 .asc-result {
+    position: relative;
     margin-top: 50px;
     padding: 16px;
     background: #ffffff;
@@ -187,14 +193,16 @@
 }
 
 .asc-result > div {
-    display: flex;
     justify-content: space-between;
     align-items: center;
     background: #ebecf0;
-    padding: 10px 12px;
     border-radius: 8px;
     margin-bottom: 8px;
     font-size: 13px;
+}
+.asc-result > .asc-exp, .asc-result > .asc-count, .asc-result > .asc-gold, .asc-result > .asc-coin  {
+    display: flex;
+    padding: 10px 12px;
 }
 
 .asc-result > div:last-child {

@@ -9,26 +9,6 @@ function saveCache(cache) {
     localStorage.setItem('auctionCache', JSON.stringify(cache));
 }
 
-function addLoadingDiv(el) {
-    const l1 = document.createElement('div');
-    const l2 = document.createElement('div');
-    const l3 = document.createElement('div');
-    l1.className = 'spinner-placeholder';
-    l2.className = 'spinner-box';
-    l3.className = 'spinner';
-    el.appendChild(l1);
-    l1.appendChild(l2);
-    l2.appendChild(l3);
-    for (let i = 0; i < 12; i++) {
-        const l4 = document.createElement('div');
-        l3.appendChild(l4);
-    }
-}
-
-function hideLoadingDiv(el) {
-    el.classList.add("hidden")
-}
-
 document.addEventListener('buttonsInserted', async () => {
     const buttons = document.querySelectorAll('.drop-btn');
     const container = document.querySelector('.drop-placeholder');
