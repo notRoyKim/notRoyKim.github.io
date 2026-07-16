@@ -437,3 +437,12 @@ footer {
         text-decoration: underline;
     }
 }
+
+@media screen and (max-width: 399px) {
+    main.contents {
+        padding: 20px 5%;
+    }
+    .night-sky {
+        display: none;
+    }
+}
