@@ -1,20 +1,10 @@
-function loadCache() {
-    const raw = localStorage.getItem('ascCache');
-    return raw ? JSON.parse(raw) : {};
-}
+// ==========================================
+// 1. 상수 및 초기 데이터 설정
+// ==========================================
+const CACHE_KEY = 'ascCache';
 
-function saveCache(cache) {
-    localStorage.setItem('ascCache', JSON.stringify(cache));
-}
-
-
-let draggedCard = null;
-
-let activeCard = null;
-
-const t = ['타이론', '폴라', '목표'];
-
-const tl = [{name: "브리흐네 잉어", qty: 10, class: "A", idx: "1", avgPrice: 0, totalPrice: 0},
+const tl = [
+    {name: "브리흐네 잉어", qty: 10, class: "A", idx: "1", avgPrice: 0, totalPrice: 0},
     {name: "개암버섯", qty: 50, class: "A", idx: "2", avgPrice: 0, totalPrice: 0},
     {name: "힐웬 광석 조각", qty: 100, class: "A", idx: "3", avgPrice: 0, totalPrice: 0},
     {name: "실리엔 결정", qty: 100, class: "A", idx: "4", avgPrice: 0, totalPrice: 0},
@@ -37,9 +27,11 @@ const tl = [{name: "브리흐네 잉어", qty: 10, class: "A", idx: "1", avgPric
     {name: "나무장작", qty: 30, class: "C", idx: "21", avgPrice: 0, totalPrice: 0},
     {name: "마나 허브", qty: 30, class: "C", idx: "22", avgPrice: 0, totalPrice: 0},
     {name: "블러디 허브", qty: 30, class: "C", idx: "23", avgPrice: 0, totalPrice: 0},
-    {name: "베이스 허브", qty: 30, class: "C", idx: "24", avgPrice: 0, totalPrice: 0}];
+    {name: "베이스 허브", qty: 30, class: "C", idx: "24", avgPrice: 0, totalPrice: 0}
+];
 
-const pl = [{name: "숏 보우", qty: 1, class: "A", idx: "25", avgPrice: 0, totalPrice: 0},
+const pl = [
+    {name: "숏 보우", qty: 1, class: "A", idx: "25", avgPrice: 0, totalPrice: 0},
     {name: "호미", qty: 1, class: "A", idx: "26", avgPrice: 0, totalPrice: 0},
     {name: "폴라리스 결정", qty: 5, class: "A", idx: "27", avgPrice: 0, totalPrice: 0},
     {name: "하다르 결정", qty: 5, class: "A", idx: "28", avgPrice: 0, totalPrice: 0},
@@ -62,425 +54,375 @@ const pl = [{name: "숏 보우", qty: 1, class: "A", idx: "25", avgPrice: 0, tot
     {name: "일반 실크", qty: 50, class: "C", idx: "45", avgPrice: 0, totalPrice: 0},
     {name: "저가형 실크", qty: 50, class: "C", idx: "46", avgPrice: 0, totalPrice: 0},
     {name: "일반 가죽끈", qty: 50, class: "C", idx: "47", avgPrice: 0, totalPrice: 0},
-    {name: "저가형 가죽끈", qty: 50, class: "C", idx: "48", avgPrice: 0, totalPrice: 0}];
+    {name: "저가형 가죽끈", qty: 50, class: "C", idx: "48", avgPrice: 0, totalPrice: 0}
+];
 
-let cl = [];
+const BOARD_TYPES = [
+    { title: '타이론', className: 'drag-to drag-t', dataList: tl, pointClass: 'asc-tyron' },
+    { title: '폴라', className: 'drag-to drag-p', dataList: pl, pointClass: 'asc-polar' },
+    { title: '결과', className: 'drag-result', dataList: null, pointClass: '' }
+];
 
-document.addEventListener('dragstart', e => {
-    if (e.target.textContent === "⋮⋮") return;
-    if (!e.target.classList.contains('asc-card')) return;
-    draggedCard = e.target;
-    draggedCard.classList.add('dragging');
-});
+// 등급별 점수 매핑
+const REWARD_POINTS = {
+    'A': { exp: 150, coin: 1300 },
+    'B': { exp: 100, coin: 900 },
+    'C': { exp: 50, coin: 600 }
+};
 
-document.addEventListener('dragend', e => {
-    if (!draggedCard) return;
-    draggedCard.classList.remove('dragging');
-    draggedCard.removeAttribute('draggable');
-    draggedCard = null;
-    document.querySelectorAll('.asc-column').forEach(c => c.classList.remove('drag-over'));
-});
+// 전역 상태
+const state = {
+    selectedItems: [], // 결과창에 담긴 아이템 목록
+    draggedCard: null,
+    activeCard: null
+};
 
-function addAscDiv(el) {
-    const cache = loadCache();
-
-    const btndiv = document.createElement('div');
-    btndiv.classList.add('asc-btn-div');
-    el.appendChild(btndiv);
-
-    const clrbtn = document.createElement('div');
-    clrbtn.classList.add('asc-btn');
-    clrbtn.classList.add('asc-btn-delete');
-    clrbtn.textContent = '초기화';
-    clrbtn.addEventListener('click', onResetClick)
-    btndiv.appendChild(clrbtn);
-
-    for (let i = 0; i < 3; i++) {
-        const div = document.createElement('div');
-        div.className = 'asc-board';
-        el.appendChild(div);
-
-        const div2 = document.createElement('div');
-        if (i === 0) {
-            div2.className = 'asc-column drag-to drag-t';
-        } else if (i === 1) {
-            div2.className = 'asc-column drag-to drag-p';
-        } else {
-            div2.className = 'asc-column drag-result';
-        }
-        div2.setAttribute('data-column', '');
-
-        div2.addEventListener('dragover', e => {
-            e.preventDefault();
-            div2.classList.add('drag-over');
-        });
-
-        div2.addEventListener('dragleave', () => {
-            div2.classList.remove('drag-over');
-        });
-
-        div2.addEventListener('drop', e => {
-            e.preventDefault();
-            div2.classList.remove('drag-over');
-            if(!draggedCard) return;
-
-            if (div2.classList.contains('drag-to')) {
-                if (draggedCard.classList.contains('drag-before')) return;
-                if (draggedCard.classList.contains('drag-tCard') && div2.classList.contains('drag-p')) return;
-                if (draggedCard.classList.contains('drag-pCard') && div2.classList.contains('drag-t')) return;
-                draggedCard.classList.remove('drag-done');
-                draggedCard.classList.add('drag-before');
-
-                cl = cl.filter(item => item.name !== draggedCard.dataset.name);
-                document.querySelector('.asc-span-gold').textContent = sumTotalPrices(cl).toLocaleString('ko-KR');
-
-                const idx = draggedCard.dataset.idx;
-                delete cache[idx];
-                saveCache(cache);
-
-                draggedCard.removeEventListener('click', onCardClick);
-            } else if (div2.classList.contains('drag-result')) {
-                if (draggedCard.classList.contains('drag-done')) return;
-                if (document.querySelector('.asc-span-count').textContent === '20') {
-                    showToast('🥴 매주 20회까지만 납품할 수 있습니다.')
-                    return;
-                }
-                const idx = draggedCard.dataset.idx;
-                cache[idx] = 1;
-                saveCache(cache);
-
-                const tempcard = {name: draggedCard.dataset.name,
-                    qty: parseInt(draggedCard.dataset.qty),
-                    class: draggedCard.dataset.class,
-                    idx: draggedCard.dataset.idx,
-                    avgPrice: parseInt(draggedCard.dataset.avgPrice),
-                    totalPrice: parseInt(draggedCard.dataset.totalPrice)};
-
-                cl = [...cl,tempcard];
-                if(tempcard.avgPrice === 0) {
-                    document.querySelector('.asc-span-gold').textContent = document.querySelector('.asc-span-gold').textContent + " + @"
-                }
-                else {
-                    document.querySelector('.asc-span-gold').textContent = sumTotalPrices(cl).toLocaleString('ko-KR');
-                }
-
-                draggedCard.classList.remove('drag-before');
-                draggedCard.classList.add('drag-done');
-
-                draggedCard.addEventListener('click', onCardClick);
-            }
-
-            dropResult(e);
-
-            const list = div2.querySelector('.asc-list');
-            if (draggedCard) list.appendChild(draggedCard);
-        });
-        div.appendChild(div2);
-
-        const h3 = document.createElement('h3');
-        h3.textContent = t[i];
-        div2.appendChild(h3);
-
-        const h3div = document.createElement('div');
-        if(i === 0) {
-            h3div.className = 'asc-tyron';
-        } else if (i === 1) {
-            h3div.className = 'asc-polar';
-        }
-        h3.appendChild(h3div);
-
-        const div3 = document.createElement('div');
-        div3.className = 'asc-list';
-        div2.appendChild(div3);
-
-        if (i === 2) {
-            const divResult = document.createElement('div');
-            divResult.className = 'asc-result';
-            div2.appendChild(divResult);
-
-            const h3Result = document.createElement('h3');
-            h3Result.textContent = '결과';
-            divResult.appendChild(h3Result);
-
-            const divExp = document.createElement('div');
-            divExp.className = 'asc-exp';
-            divExp.textContent = '협회 경험치 : '
-            divResult.appendChild(divExp);
-
-            const spanExp = document.createElement('span');
-            spanExp.textContent = '0';
-            spanExp.classList.add('asc-span-exp');
-            divExp.appendChild(spanExp);
-
-            const divCount = document.createElement('div');
-            divCount.className = 'asc-count';
-            divCount.textContent = '수주한 의뢰 수 : '
-            divResult.appendChild(divCount);
-
-            const spanCount = document.createElement('span');
-            spanCount.textContent = '0';
-            spanCount.classList.add('asc-span-count');
-            divCount.appendChild(spanCount);
-
-            const spanMax = document.createElement('span');
-            spanMax.textContent = ' / 20';
-            divCount.appendChild(spanMax);
-
-            const divGold = document.createElement('div');
-            divGold.className = 'asc-gold';
-            divGold.textContent = '납품 원가 : '
-            divResult.appendChild(divGold);
-
-            const spanGold = document.createElement('span');
-            spanGold.textContent = '0';
-            spanGold.classList.add('asc-span-gold');
-            divGold.appendChild(spanGold);
-
-            const btnGold = document.createElement('div');
-            btnGold.classList.add('asc-btn');
-            btnGold.classList.add('asc-btn-cal');
-            btnGold.textContent = '산정';
-            btnGold.addEventListener('click', onCalClick)
-            divGold.appendChild(btnGold);
-
-            const divCoin = document.createElement('div');
-            divCoin.className = 'asc-coin';
-            divCoin.textContent = '협회 코인 : '
-            divResult.appendChild(divCoin);
-
-            const spanCoin = document.createElement('span');
-            spanCoin.textContent = '0';
-            spanCoin.classList.add('asc-span-coin');
-            divCoin.appendChild(spanCoin);
-        }
-
-        let curList;
-        if (i === 0) {
-            curList = tl;
-        } else if (i === 1) {
-            curList = pl;
-        } else {
-            curList = cl;
-        }
-
-        for (let j = 0; j < curList.length; j++) {
-            if (i < 2) {
-                if (cache[curList[j].idx]) {
-                    if(!cl) cl = curList[j];
-                    else cl = [...cl,curList[j]];
-                    continue;
-                }
-            } else if (i === 2) {
-                if (cache[cl[j]]) continue;
-
-                if (cl[j].class === 'A') {
-                    changeResult(150);
-                } else if (cl[j].class === 'B') {
-                    changeResult(100);
-                } else if (cl[j].class === 'C') {
-                    changeResult(50);
-                }
-            }
-
-            const div4 = document.createElement('div');
-            if (i === 0) {
-                div4.className = 'asc-card drag-before drag-tCard';
-            } else if (i === 1) {
-                div4.className = 'asc-card drag-before drag-pCard';
-            } else if (i === 2) {
-                div4.className = 'asc-card drag-done';
-                div4.addEventListener('click', onCardClick);
-            }
-            div4.dataset.name = curList[j].name;
-            div4.dataset.qty = curList[j].qty;
-            div4.dataset.class = curList[j].class;
-            div4.dataset.idx = curList[j].idx;
-            div4.dataset.avgPrice = curList[j].avgPrice;
-            div4.dataset.totalPrice = curList[j].totalPrice;
-            div3.appendChild(div4);
-
-            const span = document.createElement('span');
-            span.className = 'asc-handle';
-            span.innerText = "⋮⋮";
-
-            span.addEventListener('mousedown', e => {
-                const card = span.closest('.asc-card');
-                card.setAttribute('draggable', 'true');
-            });
-
-            span.addEventListener('mouseup', e => {
-                const card = span.closest('.asc-card');
-                card.removeAttribute('draggable');
-            });
-            div4.appendChild(span);
-
-            const div5 = document.createElement('div');
-            div5.className = 'asc-content';
-            div5.innerHTML = curList[j].name + " " + curList[j].qty + "개";
-            div4.appendChild(div5);
-
-            const divClass = document.createElement('div');
-            divClass.className = 'asc-class tooltip-wrap asc-class-' + curList[j].class.toLowerCase();
-            divClass.dataset.tooltip = curList[j].class + "등급";
-            if (curList[j].class === 'A') {
-                divClass.innerHTML = '😻';
-            } else if (curList[j].class === 'B') {
-                divClass.innerHTML = '😼';
-            } else if (curList[j].class === 'C') {
-                divClass.innerHTML = '😹';
-            }
-            div4.appendChild(divClass);
-        }
+// ==========================================
+// 2. 캐시 및 데이터 관리 모듈
+// ==========================================
+const AscCache = {
+    load: () => JSON.parse(localStorage.getItem(CACHE_KEY) || '{}'),
+    save: (data) => localStorage.setItem(CACHE_KEY, JSON.stringify(data)),
+    add: (idx) => {
+        const cache = AscCache.load();
+        cache[idx] = 1;
+        AscCache.save(cache);
+    },
+    remove: (idx) => {
+        const cache = AscCache.load();
+        delete cache[idx];
+        AscCache.save(cache);
     }
+};
 
-}
-
-function onCardClick(e) {
-    if (!activeCard) activeCard = e.currentTarget;
-    else activeCard.classList.remove('card-active');
-    activeCard = e.currentTarget;
-    activeCard.classList.add('card-active');
-
-    const item = e.currentTarget.dataset.name;
-    if (item) {
-        navigator.clipboard.writeText(item)
-            .then(() => {
-                showToast('🥴 클립보드에 복사되었습니다!');
-                activeCard.lastChild.classList.add('animate');
-            })
-            .catch(() => showToast('복사 실패 😢'));
+async function fetchAuctionPrices(itemNames) {
+    if (!itemNames || itemNames.length === 0) return [];
+    try {
+        const res = await fetch("https://shrill-union-acd2.sinant7616.workers.dev/drop", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ items: itemNames })
+        });
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return await res.json();
+    } catch (error) {
+        console.error("Failed to load prices:", error);
+        return [];
     }
 }
 
-async function onResetClick(e) {
-    console.log(e.currentTarget.classList);
-    if (!e.currentTarget.classList.contains('active')) {
-        e.currentTarget.classList.add('active');
+// ==========================================
+// 3. UI 렌더링 모듈 (템플릿 기반)
+// ==========================================
+function createCardHTML(item, isResultBoard = false) {
+    const classEmoji = item.class === 'A' ? '😻' : item.class === 'B' ? '😼' : '😹';
+    const cardStateClass = isResultBoard ? 'drag-done' : (item.class === 'A' || item.class === 'B' ? 'drag-before drag-tCard' : 'drag-before drag-pCard');
+
+    return `
+        <div class="asc-card ${cardStateClass}" 
+             data-name="${item.name}" 
+             data-qty="${item.qty}" 
+             data-class="${item.class}" 
+             data-idx="${item.idx}" 
+             data-avg-price="${item.avgPrice || 0}" 
+             data-total-price="${item.totalPrice || 0}">
+            
+            <span class="asc-handle" title="드래그 앤 드롭">⋮⋮</span>
+            <div class="asc-content">${item.name} ${item.qty}개</div>
+            
+            <div class="asc-class tooltip-wrap asc-class-${item.class.toLowerCase()}" data-tooltip="${item.class}등급">
+                ${classEmoji}
+            </div>
+        </div>
+    `;
+}
+
+function renderResultBoardUI() {
+    return `
+        <div class="asc-result">
+            <h3>결과 요약</h3>
+            <div class="asc-exp">협회 경험치 : <span class="asc-span-exp">0</span></div>
+            <div class="asc-count">수주한 의뢰 수 : <span class="asc-span-count">0</span><span> / 20</span></div>
+            
+            <div class="asc-gold">
+                납품 원가 : <span class="asc-span-gold">0</span>
+                <div class="asc-btn asc-btn-cal" id="btn-calculate-prices">산정</div>
+            </div>
+            
+            <div class="asc-coin">협회 코인 : <span class="asc-span-coin">0</span></div>
+        </div>
+    `;
+}
+
+function addAscDiv(container) {
+    const cache = AscCache.load();
+    let initialSelectedItems = [];
+
+    // 최상단 버튼 영역
+    const btnContainer = document.createElement('div');
+    btnContainer.className = 'asc-btn-div';
+    btnContainer.innerHTML = `<div class="asc-btn asc-btn-delete" id="btn-reset-asc">초기화</div>`;
+    container.appendChild(btnContainer);
+
+    // 3개의 컬럼 영역 생성
+    BOARD_TYPES.forEach((board, i) => {
+        const boardDiv = document.createElement('div');
+        boardDiv.className = 'asc-board';
+
+        let listHTML = '';
+        const currentList = board.dataList || initialSelectedItems;
+
+        // 결과창 초기 로딩용 데이터 분리
+        if (i < 2) {
+            currentList.forEach(item => {
+                if (cache[item.idx]) {
+                    initialSelectedItems.push(item);
+                } else {
+                    listHTML += createCardHTML(item, false);
+                }
+            });
+        } else {
+            // 3번째 결과 컬럼
+            currentList.forEach(item => {
+                listHTML += createCardHTML(item, true);
+            });
+        }
+
+        const columnHTML = `
+            <div class="asc-column ${board.className}" data-column>
+                <h3>
+                    <div class="${board.pointClass}"></div>
+                    ${board.title}
+                </h3>
+                <div class="asc-list">${listHTML}</div>
+                ${i === 2 ? renderResultBoardUI() : ''}
+            </div>
+        `;
+
+        boardDiv.innerHTML = columnHTML;
+        container.appendChild(boardDiv);
+    });
+
+    state.selectedItems = initialSelectedItems;
+
+    // 초기 렌더링 시 결과창 수치 업데이트
+    initialSelectedItems.forEach(item => updateRewards(item.class, 1));
+    updateTotalPriceUI();
+
+    bindEvents(container);
+}
+
+// ==========================================
+// 4. 이벤트 핸들러 및 위임
+// ==========================================
+function bindEvents(container) {
+    // 버튼 이벤트
+    document.getElementById('btn-reset-asc')?.addEventListener('click', handleResetClick);
+    document.getElementById('btn-calculate-prices')?.addEventListener('click', handleCalculateClick);
+
+    // 카드 클릭 이벤트 (위임)
+    container.addEventListener('click', (e) => {
+        const card = e.target.closest('.asc-card.drag-done');
+        if (!card) return;
+
+        if (state.activeCard) state.activeCard.classList.remove('card-active');
+        state.activeCard = card;
+        card.classList.add('card-active');
+
+        const itemName = card.dataset.name;
+        if (itemName) {
+            navigator.clipboard.writeText(itemName)
+                .then(() => {
+                    showToast('🥴 클립보드에 복사되었습니다!');
+                    card.querySelector('.asc-class')?.classList.add('animate');
+                })
+                .catch(() => showToast('복사 실패 😢'));
+        }
+    });
+
+    // 드래그 핸들 마우스 이벤트
+    container.addEventListener('mousedown', e => {
+        if (e.target.classList.contains('asc-handle')) {
+            e.target.closest('.asc-card').setAttribute('draggable', 'true');
+        }
+    });
+
+    container.addEventListener('mouseup', e => {
+        if (e.target.classList.contains('asc-handle')) {
+            e.target.closest('.asc-card').removeAttribute('draggable');
+        }
+    });
+
+    // 드래그 앤 드롭 이벤트
+    setupDragAndDrop(container);
+}
+
+function setupDragAndDrop(container) {
+    document.addEventListener('dragstart', e => {
+        if (!e.target.classList?.contains('asc-card')) return;
+        state.draggedCard = e.target;
+        state.draggedCard.classList.add('dragging');
+    });
+
+    document.addEventListener('dragend', () => {
+        if (!state.draggedCard) return;
+        state.draggedCard.classList.remove('dragging');
+        state.draggedCard.removeAttribute('draggable');
+        state.draggedCard = null;
+        document.querySelectorAll('.asc-column').forEach(c => c.classList.remove('drag-over'));
+    });
+
+    document.querySelectorAll('.asc-column').forEach(column => {
+        column.addEventListener('dragover', e => {
+            e.preventDefault();
+            column.classList.add('drag-over');
+        });
+
+        column.addEventListener('dragleave', () => {
+            column.classList.remove('drag-over');
+        });
+
+        column.addEventListener('drop', e => {
+            e.preventDefault();
+            column.classList.remove('drag-over');
+            if (!state.draggedCard) return;
+
+            handleDrop(column);
+        });
+    });
+}
+
+function handleDrop(targetColumn) {
+    const card = state.draggedCard;
+    const isToResult = targetColumn.classList.contains('drag-result');
+    const isFromOrigin = targetColumn.classList.contains('drag-to');
+
+    // 교차 이동 방지 로직 (타이론 <-> 폴라 간의 이동 금지)
+    if (isFromOrigin) {
+        if (card.classList.contains('drag-before')) return;
+        if (card.classList.contains('drag-tCard') && targetColumn.classList.contains('drag-p')) return;
+        if (card.classList.contains('drag-pCard') && targetColumn.classList.contains('drag-t')) return;
+
+        // 원상복구 처리
+        card.classList.replace('drag-done', 'drag-before');
+        state.selectedItems = state.selectedItems.filter(item => item.name !== card.dataset.name);
+        AscCache.remove(card.dataset.idx);
+        updateRewards(card.dataset.class, -1);
+        updateTotalPriceUI();
+
+    } else if (isToResult) {
+        if (card.classList.contains('drag-done')) return;
+
+        const currentCount = parseInt(document.querySelector('.asc-span-count').textContent) || 0;
+        if (currentCount >= 20) {
+            showToast('🥴 매주 20회까지만 납품할 수 있습니다.');
+            return;
+        }
+
+        // 결과창으로 이동 처리
+        AscCache.add(card.dataset.idx);
+
+        const newItem = {
+            name: card.dataset.name,
+            qty: parseInt(card.dataset.qty),
+            class: card.dataset.class,
+            idx: card.dataset.idx,
+            avgPrice: parseInt(card.dataset.avgPrice) || 0,
+            totalPrice: parseInt(card.dataset.totalPrice) || 0
+        };
+
+        state.selectedItems.push(newItem);
+        card.classList.replace('drag-before', 'drag-done');
+
+        updateRewards(card.dataset.class, 1);
+        updateTotalPriceUI();
+    }
+
+    // 카드 이동
+    const list = targetColumn.querySelector('.asc-list');
+    if (list) list.appendChild(card);
+}
+
+// ==========================================
+// 5. 상태 계산 및 업데이트
+// ==========================================
+function updateRewards(itemClass, multiplier) {
+    const points = REWARD_POINTS[itemClass];
+    if (!points) return;
+
+    const els = {
+        exp: document.querySelector('.asc-span-exp'),
+        coin: document.querySelector('.asc-span-coin'),
+        count: document.querySelector('.asc-span-count')
+    };
+
+    if (els.exp) els.exp.textContent = (parseInt(els.exp.textContent || 0) + (points.exp * multiplier)).toString();
+    if (els.coin) els.coin.textContent = (parseInt(els.coin.textContent || 0) + (points.coin * multiplier)).toString();
+    if (els.count) els.count.textContent = (parseInt(els.count.textContent || 0) + multiplier).toString();
+}
+
+function updateTotalPriceUI() {
+    const goldSpan = document.querySelector('.asc-span-gold');
+    if (!goldSpan) return;
+
+    const hasUnknownPrice = state.selectedItems.some(item => item.avgPrice === 0);
+    const total = state.selectedItems.reduce((acc, curr) => acc + curr.totalPrice, 0);
+
+    goldSpan.textContent = hasUnknownPrice && total === 0 ? "0 + @"
+        : hasUnknownPrice ? `${total.toLocaleString('ko-KR')} + @`
+            : total.toLocaleString('ko-KR');
+}
+
+async function handleCalculateClick(e) {
+    if (state.selectedItems.length === 0) {
+        showToast("산정할 아이템이 없습니다.");
+        return;
+    }
+
+    const targetAncestor = e.currentTarget.closest('.asc-result');
+    if (typeof addLoadingDiv === 'function') addLoadingDiv(targetAncestor);
+
+    const itemNames = state.selectedItems.map(item => item.name);
+    const aucResult = await fetchAuctionPrices(itemNames);
+
+    // 가격 재계산 로직
+    state.selectedItems = state.selectedItems.map(item => {
+        const matched = aucResult.find(auc => auc.item_name === item.name);
+        const avgPrice = matched ? Number(matched.avg_price) : 0;
+        return { ...item, avgPrice, totalPrice: item.qty * avgPrice };
+    });
+
+    // DOM 업데이트
+    document.querySelectorAll('.asc-card').forEach(card => {
+        const matchedData = state.selectedItems.find(item => item.name === card.dataset.name);
+        if (matchedData) {
+            card.dataset.avgPrice = matchedData.avgPrice;
+            card.dataset.totalPrice = matchedData.totalPrice;
+        }
+    });
+
+    updateTotalPriceUI();
+
+    if (typeof deleteLoadingDiv === 'function') {
+        deleteLoadingDiv(document.querySelector(".spinner-placeholder"));
+    }
+}
+
+async function handleResetClick(e) {
+    const btn = e.currentTarget;
+    if (!btn.classList.contains('active')) {
+        btn.classList.add('active');
         showToast('👀 한번 더 누르면 초기화 됩니다.');
         return;
     }
-    localStorage.removeItem('ascCache');
+
+    localStorage.removeItem(CACHE_KEY);
     showToast('🫠 초기화 되었습니다.');
 
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-    await sleep(1000); // 1초 대기
-    location.replace(location.href);
+    setTimeout(() => location.replace(location.href), 1000);
 }
 
-async function onCalClick(e) {
-    const targetAncestor = e.currentTarget.closest('.asc-result');
-    const Gold = document.querySelector('.asc-span-gold');
-    const itemNames = cl.map(item => item.name);
-    addLoadingDiv(targetAncestor);
-    const aucResult = await loadPostAvgPrices(itemNames);
-    cl = calculateTotalPrices(cl, aucResult);
-    Gold.textContent = sumTotalPrices(cl).toLocaleString('ko-KR');
-    updateCardPrices(cl)
-    const ldivEl = document.querySelector(".spinner-placeholder");
-    deleteLoadingDiv(ldivEl)
-}
-
-async function loadPostAvgPrices(itemNames) {
-    try {
-        const response = await fetch("https://shrill-union-acd2.sinant7616.workers.dev/drop", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ items: itemNames })  // 배열 그대로 보내기
-        });
-
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-        return await response.json(); // 변수 없이 바로 반환
-    } catch (error) {
-        console.error("Failed to load prices:", error);
-    }
-}
-
-function calculateTotalPrices(cl, aucResult) {
-    return cl.map(item => {
-        const matchedItem = aucResult.find(auc => auc.item_name === item.name);
-        const avgPrice = matchedItem ? Number(matchedItem.avg_price) : 0;
-        return {
-            ...item, // 기존 name, qty, class, idx 유지
-            avgPrice: avgPrice, // 참고용 단가
-            totalPrice: item.qty * avgPrice // 수량 * 단가
-        };
-    });
-}
-
-function updateCardPrices(cl) {
-    const cards = document.querySelectorAll('.asc-card');
-    cl.forEach(item => {
-        const targetCard = Array.from(cards).find(card => card.dataset.name === item.name);
-        if (targetCard) {
-            targetCard.dataset.avgPrice = item.avgPrice;
-            targetCard.dataset.totalPrice = item.totalPrice;
-            // targetCard.querySelector('.price-display').textContent = item.totalPrice;
-            console.log(`${item.name} 카드의 데이터가 업데이트되었습니다.`);
-        }
-    });
-}
-
-function sumTotalPrices(arr) {
-    // acc(누적값)에 계속해서 현재 요소(curr)의 totalPrice를 더함, 초기값은 0
-    return arr.reduce((acc, curr) => acc + curr.totalPrice, 0);
-}
-
-function changeResult(v) {
-    const exp = document.querySelector('.asc-span-exp');
-    const Count = document.querySelector('.asc-span-count');
-    //const Gold = document.querySelector('.asc-span-gold');
-    const coin = document.querySelector('.asc-span-coin');
-
-    let sign = Math.sign(v);
-
-    if (v % 50 === 0) {
-        exp.textContent = (parseInt(exp.textContent) + v).toString();
-
-        if(v === 150) {
-            coin.textContent = (parseInt(coin.textContent) + 1300).toString();
-        }
-        else if(v === 100) {
-            coin.textContent = (parseInt(coin.textContent) + 900).toString();
-        }
-        else if(v === 50) {
-            coin.textContent = (parseInt(coin.textContent) + 600).toString();
-        }
-    } else {
-        exp.textContent = '에러, 아래 메일로 문의해주세요.';
-    }
-    Count.textContent = (parseInt(Count.textContent) + sign).toString();
-}
-
-function dropResult(e) {
-    const exp = document.querySelector('.asc-span-exp');
-    const Count = document.querySelector('.asc-span-count');
-    const Gold = document.querySelector('.asc-span-gold');
-    const coin = document.querySelector('.asc-span-coin');
-    let sign = 1;
-
-    if (e.currentTarget.classList.contains('drag-to')) {
-        sign = -1;
-    }
-
-    if (draggedCard.dataset.class === 'A') {
-        exp.textContent = (parseInt(exp.textContent) + sign * 150).toString();
-        coin.textContent = (parseInt(coin.textContent) + sign * 1300).toString();
-    } else if (draggedCard.dataset.class === 'B') {
-        exp.textContent = (parseInt(exp.textContent) + sign * 100).toString();
-        coin.textContent = (parseInt(coin.textContent) + sign * 900).toString();
-    } else if (draggedCard.dataset.class === 'C') {
-        exp.textContent = (parseInt(exp.textContent) + sign * 50).toString();
-        coin.textContent = (parseInt(coin.textContent) + coin * 600).toString();
-    } else {
-        exp.textContent = '에러, 아래 메일로 문의해주세요.';
-    }
-    Count.textContent = (parseInt(Count.textContent) + sign).toString();
-}
-
+// 초기화 진입점
 function f_initAsc(el) {
     addAscDiv(el);
 }

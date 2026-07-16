@@ -273,7 +273,30 @@ main.contents p {
     font-size: 14px;
     color: #555555;
 }
+main.main-content {
+    flex: 1 0 auto;
+    transition: width 0.3s ease;
+    padding: 20px 15%;
+    box-sizing: border-box;
+    border-bottom: #a7a7a7 1px solid;
+}
+
+main.main-content h1 {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 32px;
+    color: #1F3B6F;
+}
+
+main.main-content p {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 14px;
+    color: #555555;
+}
 .contents.shrink {
+    transition: width 0.3s ease;
+    z-index: -100;
+}
+.main-content.shrink {
     transition: width 0.3s ease;
     z-index: -100;
 }
@@ -440,6 +463,9 @@ footer {
 
 @media screen and (max-width: 399px) {
     main.contents {
+        padding: 20px 5%;
+    }
+    main.main-content {
         padding: 20px 5%;
     }
     .night-sky {
