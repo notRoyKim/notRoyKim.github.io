@@ -72,13 +72,14 @@
 
 @media (max-width: 399px) {
     .button-grid {
-        grid-template-columns: repeat(1, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0 10px 0 10px;
     }
     .drop-btn-itemname {
-        font-size: 12px;
+        font-size: 10px;
     }
     .drop-btn-itemprice {
-        font-size: 12px;
+        font-size: 10px;
     }
 }
 @media (min-width: 400px) and (max-width: 767px) {

@@ -408,19 +408,32 @@ footer {
 =================================================== */
 @media screen and (max-width: 768px) {
     header {
-        position: sticky; /* 모바일: 헤더 상단 고정 */
+        position: fixed; /* 요청하신 fixed 적용 */
         top: 0;
+        left: 0;
+        width: 100%;
         z-index: 200;
     }
 
+    /* 헤더가 fixed 되면서 발생하는 본문 위쪽 빈 공간/가려짐 해결 */
+    body {
+        padding-top: 70px;
+    }
+
     .lnb-background {
-        display: none !important; /* 모바일: 배경 레이어 숨김 (JS가 건드려도 무시) */
+        display: none !important; /* 모바일: 배경 레이어 숨김 */
     }
 
     .lnb {
         position: fixed; /* 모바일: 화면 기준 고정 */
         background: #f5f5f5; /* 모바일: lnb 자체에 배경색 추가 */
-        border-right: 1px solid lightgray; /* 모바일: 테두리 추가 */
-        /* top, left, width 등은 PC 스타일을 그대로 상속받음 */
+        border-right: 1px solid lightgray;
+        z-index: 100;
+        /* top: 70px; 와 height: calc(100vh - 70px); 는 PC 스타일에서 상속됨 */
+    }
+
+    .footer-content a{
+        font-size: 10px;
+        text-decoration: underline;
     }
 }
